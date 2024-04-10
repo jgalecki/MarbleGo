@@ -1,0 +1,167 @@
+[gd_scene load_steps=10 format=3 uid="uid://sa8uosstnnet"]
+
+[ext_resource type="Script" path="res://scripts/game_screen.gd" id="1_lm0ql"]
+[ext_resource type="Script" path="res://scripts/game_board.gd" id="2_u321j"]
+[ext_resource type="Texture2D" uid="uid://cmpt6ee4rgucl" path="res://sprites/game_board.png" id="3_vdwll"]
+[ext_resource type="Script" path="res://scripts/points_container.gd" id="4_cnxt6"]
+[ext_resource type="Script" path="res://scripts/score_display.gd" id="4_k2lgo"]
+[ext_resource type="Script" path="res://scripts/lines_container.gd" id="5_7kgay"]
+[ext_resource type="Script" path="res://scripts/territory.gd" id="5_ep486"]
+[ext_resource type="Script" path="res://scripts/triangles_container.gd" id="6_4wgxr"]
+[ext_resource type="Script" path="res://scripts/game_over_screen.gd" id="9_bnro6"]
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("game_board", "game_over_screen", "debug_score_display")]
+script = ExtResource("1_lm0ql")
+game_board = NodePath("GameBoard")
+game_over_screen = NodePath("CanvasLayer/GameOverScreen")
+debug_score_display = NodePath("CanvasLayer/Debug Score Display")
+
+[node name="Camera" type="Camera2D" parent="."]
+
+[node name="GameBoard" type="Node2D" parent="." node_paths=PackedStringArray("points_container", "lines_container", "triangles_container")]
+script = ExtResource("2_u321j")
+points_container = NodePath("PointsContainer")
+lines_container = NodePath("LinesContainer")
+triangles_container = NodePath("TrianglesContainer")
+
+[node name="Game Board Sprite" type="Sprite2D" parent="GameBoard"]
+texture = ExtResource("3_vdwll")
+
+[node name="PointsContainer" type="Node2D" parent="GameBoard"]
+script = ExtResource("4_cnxt6")
+
+[node name="LinesContainer" type="Node2D" parent="GameBoard"]
+script = ExtResource("5_7kgay")
+
+[node name="TrianglesContainer" type="Node2D" parent="GameBoard"]
+script = ExtResource("6_4wgxr")
+
+[node name="Territory" type="Node2D" parent="."]
+script = ExtResource("5_ep486")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="Debug Score Display" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("current_turn", "score", "mouse_position")]
+custom_minimum_size = Vector2(300, 100)
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -912.0
+offset_top = -314.0
+offset_right = -612.0
+offset_bottom = -214.0
+grow_horizontal = 0
+script = ExtResource("4_k2lgo")
+current_turn = NodePath("PanelContainer/MarginContainer/GridContainer/Current Turn")
+score = NodePath("PanelContainer/MarginContainer/GridContainer/Score")
+mouse_position = NodePath("PanelContainer/MarginContainer/GridContainer/Mouse Position")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Debug Score Display"]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 86.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Debug Score Display/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+columns = 2
+
+[node name="Current Turn Header" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Current Turn:"
+
+[node name="Current Turn" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Black"
+
+[node name="Score Header" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Score:"
+
+[node name="Score" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Black: 000, White 000"
+
+[node name="Mouse Header" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Mouse:"
+
+[node name="Mouse Position" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "x: 5000, y: 1000"
+
+[node name="GameOverScreen" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("winner_label", "black_score_label", "white_score_label")]
+visible = false
+layout_mode = 3
+anchor_left = -0.495
+anchor_top = -0.502
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 98.2401
+offset_top = 67.296
+offset_right = -78.0
+offset_bottom = -33.0
+script = ExtResource("9_bnro6")
+winner_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/Winner Label")
+black_score_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/Black Score Label")
+white_score_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/White Score Label")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/GameOverScreen"]
+layout_mode = 0
+offset_right = 972.0
+offset_bottom = 555.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GameOverScreen/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Winner Label" type="Label" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "BLACK wins!"
+horizontal_alignment = 1
+
+[node name="Black Score Label" type="Label" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "BLACK: 512 points."
+horizontal_alignment = 1
+
+[node name="White Score Label" type="Label" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "WHITE: 251 points."
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 36
+text = "Restart"
+
+[connection signal="marble_added" from="GameBoard" to="Territory" method="_on_marble_added"]
+[connection signal="count_triangle" from="Territory" to="." method="_on_territory_count_triangle"]
+[connection signal="count_triangle" from="Territory" to="GameBoard" method="_on_territory_count_triangle"]
+[connection signal="finished_scoring" from="Territory" to="." method="_on_territory_finished_scoring"]
+[connection signal="show_triangle_lines" from="Territory" to="GameBoard" method="_on_territory_show_triangle_lines"]
+[connection signal="pressed" from="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer/Button" to="." method="_on_restart_button_pressed"]

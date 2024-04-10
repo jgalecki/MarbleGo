@@ -1,0 +1,40 @@
+xx First weekend: Territory mechanics, basic ui
+  Win / lose screen and game end conditions
+  Marble shooting + physics
+    UI for shooting
+  Special marble types
+    UI for selecting
+  Better UI for territory creation
+    Slower steps, make pausable
+  P2P network multiplayer
+    Direct connection via IP? No need for "server room" then
+    
+
+Open questions:
+  Is triangle formation predictable enough?
+  Once triangles are formed, they can be reformed or replaced when adding new pieces.
+    Is this good
+    Is this legible?
+    Alternative: Keep old triangles, add new points on as new triangles
+      Raycast to new places
+      Or if inside a current triangle, add to all points
+  Is territory formation legible enough?
+    What UI can be added to help here?  
+  
+Ideas:
+idea - pick places at the same time?
+idea - triangles health + cancellation
+idea - stuff on the board - weighted scores
+idea - win condition as total percentage? Sudden death, even, black can have last turn
+idea - battle royale - board shrinks - pulse?
+idea - triangles solidify after X turns
+idea - danger areas in the triangles
+
+idea - shuffleboard, hive, crokinole, 
+idea - capture mechanics?
+idea - problem could be solved when marble mechanics are in place
+idea - marbles have hit points, die when hit twice or three times
+
+
+problem: last turn is too powerful
+problem: eye-poking too powerful

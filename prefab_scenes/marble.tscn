@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://c1hg7v7rt06fh"]
+
+[ext_resource type="Script" path="res://scripts/marble.gd" id="1_8mmhb"]
+[ext_resource type="Texture2D" uid="uid://ib8aq0x73vqj" path="res://sprites/piece.png" id="1_lg0cu"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2378k"]
+radius = 8.0
+
+[node name="Marble" type="RigidBody2D" node_paths=PackedStringArray("sprite", "collider")]
+gravity_scale = 0.0
+script = ExtResource("1_8mmhb")
+sprite = NodePath("MarbleSprite")
+collider = NodePath("CollisionShape2D")
+
+[node name="MarbleSprite" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_lg0cu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_2378k")
