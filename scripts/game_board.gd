@@ -7,6 +7,7 @@ var marble_prefab = preload("res://prefab_scenes/marble.tscn")
 @export var points_container:PointsContainer
 @export var lines_container:LinesContainer
 @export var triangles_container:TrianglesContainer
+@export var audio_manager:AudioManager
 
 # Store the points added by players
 var black_marbles:Array[Marble] = []
@@ -55,6 +56,7 @@ func add_point(player_id, position) -> bool:
 		triangle.queue_free()
 	
 	marble_added.emit(black_marbles, white_marbles)
+	audio_manager.playClick()
 	
 	# Draw the point
 #	draw_point(position, player_id)
@@ -92,7 +94,7 @@ func draw_triangles():
 	pass
 
 
-func _on_territory_count_triangle(triangle: Delaunay.Triangle, player: int):
+func _on_territory_count_triangle(triangle: Delaunay.Triangle, player: int, count : int):
 	var p = PackedVector2Array()
 	p.append(triangle.a)
 	p.append(triangle.b)
@@ -111,6 +113,10 @@ func _on_territory_count_triangle(triangle: Delaunay.Triangle, player: int):
 	line.antialiased
 	line.default_color = Color(0, 0, 0) if player == 0 else Color(1, 1, 1)
 	lines_container.add_child(line)
+	if player == 0:
+		audio_manager.playBlackSound(count)
+	else:
+		audio_manager.playWhiteSound(count)
 	
 
 

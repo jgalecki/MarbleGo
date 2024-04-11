@@ -16,7 +16,7 @@ class Tri:
 var black_delaunay:Delaunay
 var white_delaunay:Delaunay
 
-signal count_triangle(triangle:Delaunay.Triangle, player:int)
+signal count_triangle(triangle:Delaunay.Triangle, player:int, triangle_idx:int)
 signal show_triangle_lines(triangle:Delaunay.Triangle, player:int)
 signal finished_scoring()
 
@@ -65,6 +65,8 @@ func _on_marble_added(black_marbles:Array[Marble], white_marbles:Array[Marble]):
 #		count_triangle.emit(white_tri, 1)
 
 	unblocked_tris.sort_custom(sort_longer_longest_side)
+	var black_count :int  = 0
+	var white_count: int = 0
 	while unblocked_tris.size() > 0:
 		var tri = unblocked_tris[0]
 		unblocked_tris.remove_at(0)
@@ -79,9 +81,15 @@ func _on_marble_added(black_marbles:Array[Marble], white_marbles:Array[Marble]):
 			var removing_tri = unblocked_tris[i]
 			show_triangle_lines.emit(removing_tri.triangle, removing_tri.owner)
 			unblocked_tris.remove_at(i)
-			
-		count_triangle.emit(tri.triangle, tri.owner)
-		await get_tree().create_timer(0.25).timeout
+		var count = black_count
+		if tri.owner == 1:
+			count = white_count
+		count_triangle.emit(tri.triangle, tri.owner, count)
+		if tri.owner == 0:
+			black_count = black_count + 1
+		else:
+			white_count = white_count + 1
+		await get_tree().create_timer(0.15).timeout
 	
 	finished_scoring.emit()
 

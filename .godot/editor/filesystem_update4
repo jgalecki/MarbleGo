@@ -1,8 +1,5 @@
 res://main.tscn
-res://scripts/game_screen.gd
 res://prefab_scenes/marble.tscn
-res://scripts/score_display.gd
-res://scripts/territory.gd
+res://scripts/audio_manager.gd
 res://scripts/game_board.gd
-res://scripts/triangles_container.gd
-res://scripts/game_over_screen.gd
+res://scripts/territory.gd

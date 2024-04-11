@@ -15,6 +15,10 @@ run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[dotnet]
+
+project/assembly_name="Marble Go"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gdDelaunay/plugin.cfg")
