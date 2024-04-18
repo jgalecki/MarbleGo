@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Marble Go"
+config/name="Godo Kado"
+config/description="A territory-claiming game inspired by the classic games Go and marbles."
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 config/icon="res://icon.svg"

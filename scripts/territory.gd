@@ -13,75 +13,119 @@ class Tri:
 		self.triangle = triangle
 #===================================
 
-var black_delaunay:Delaunay
-var white_delaunay:Delaunay
+var all_delaunay:Delaunay
+#var black_delaunay:Delaunay
+#var white_delaunay:Delaunay
 
 signal count_triangle(triangle:Delaunay.Triangle, player:int)
 signal show_triangle_lines(triangle:Delaunay.Triangle, player:int)
 signal finished_scoring()
 
 func _init():
-	black_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
-	white_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
+	all_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
+#	black_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
+#	white_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
 
 func _on_marble_added(black_marbles:Array[Marble], white_marbles:Array[Marble]):
-	black_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
-	white_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
+	all_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
+#	black_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
+#	white_delaunay = Delaunay.new(Rect2(-128, -128, 256, 256))
 	for marble in black_marbles:
-		black_delaunay.add_point(marble.position)
+		all_delaunay.add_point(marble.position)
+#		black_delaunay.add_point(marble.position)
 		
 	for marble in white_marbles:
-		white_delaunay.add_point(marble.position)
+		all_delaunay.add_point(marble.position)
+#		white_delaunay.add_point(marble.position)
 	
-	var black_triangles = black_delaunay.triangulate()
-	var black_tris:Array[Tri] = []
-	for i in range(black_triangles.size()):
-		black_tris.append(Tri.new(0, i, black_triangles[i]))
-	
-	var white_triangles = white_delaunay.triangulate()
-	var white_tris:Array[Tri] = []
-	for i in range(white_triangles.size()):
-		white_tris.append(Tri.new(1, i, white_triangles[i]))
+	var triangles = all_delaunay.triangulate()
+	var black_triangles:Array[Delaunay.Triangle] = []
+	var white_triangles:Array[Delaunay.Triangle] = []
+	for triangle in triangles:
+		if all_delaunay.is_border_triangle(triangle): continue
+		var a_black = black_marbles.any(func(x): return x.position == triangle.a)
+		var b_black = black_marbles.any(func(x): return x.position == triangle.b)
+		var c_black = black_marbles.any(func(x): return x.position == triangle.c)
+		var black_count = 0
+		if a_black:
+			black_count += 1
+		if b_black:
+			black_count += 1
+		if c_black:
+			black_count += 1
 		
-	var unblocked_tris:Array[Tri] = []
-	
-	for black_tri in black_tris:
-		if black_delaunay.is_border_triangle(black_tri.triangle): continue
-		show_triangle_lines.emit(black_tri.triangle, 0)
-		await get_tree().create_timer(0.1).timeout
-		if opponent_in_triangle(black_tri.triangle, white_marbles): 
-#			show_triangle_lines.emit(black_tri.triangle, 0)
-			continue
-		unblocked_tris.append(black_tri)
-		
-	for white_tri in white_tris:
-		if white_delaunay.is_border_triangle(white_tri.triangle): continue
-		show_triangle_lines.emit(white_tri.triangle, 1)
-		await get_tree().create_timer(0.1).timeout
-		if opponent_in_triangle(white_tri.triangle, black_marbles): 
-#			show_triangle_lines.emit(white_tri.triangle, 1)
-			continue
-		unblocked_tris.append(white_tri)
-#		count_triangle.emit(white_tri, 1)
-
-	unblocked_tris.sort_custom(sort_longer_longest_side)
-	while unblocked_tris.size() > 0:
-		var tri = unblocked_tris[0]
-		unblocked_tris.remove_at(0)
-		var remove_is = []
-		for i in range(unblocked_tris.size()):
-			var other_tri = unblocked_tris[i]
-			if tri.owner != other_tri.owner && triangle_intersets(tri.triangle, other_tri.triangle):
-				remove_is.append(i)
-				
-		remove_is.reverse()
-		for i in remove_is:
-			var removing_tri = unblocked_tris[i]
-			show_triangle_lines.emit(removing_tri.triangle, removing_tri.owner)
-			unblocked_tris.remove_at(i)
+		match black_count:
+			0:
+				white_triangles.append(triangle)
+				show_triangle_lines.emit(triangle, 1)
+			1:
+				show_triangle_lines.emit(triangle, 2)
+			2:
+				show_triangle_lines.emit(triangle, 3)
+			3:
+				black_triangles.append(triangle)
+				show_triangle_lines.emit(triangle, 0)
+			_:
+				assert(false)
 			
-		count_triangle.emit(tri.triangle, tri.owner)
-		await get_tree().create_timer(0.25).timeout
+	for black_triangle in black_triangles:
+		count_triangle.emit(black_triangle, 0)
+		await get_tree().create_timer(0.10).timeout
+	for white_triangle in white_triangles:
+		count_triangle.emit(white_triangle, 1)
+		await get_tree().create_timer(0.10).timeout
+		
+			
+	
+#	var black_triangles = black_delaunay.triangulate()
+#	var black_tris:Array[Tri] = []
+#	for i in range(black_triangles.size()):
+#		black_tris.append(Tri.new(0, i, black_triangles[i]))
+#
+#	var white_triangles = white_delaunay.triangulate()
+#	var white_tris:Array[Tri] = []
+#	for i in range(white_triangles.size()):
+#		white_tris.append(Tri.new(1, i, white_triangles[i]))
+		
+#	var unblocked_tris:Array[Tri] = []
+	
+#	for black_tri in black_tris:
+#		if black_delaunay.is_border_triangle(black_tri.triangle): continue
+#		show_triangle_lines.emit(black_tri.triangle, 0)
+#		await get_tree().create_timer(0.1).timeout
+#		if opponent_in_triangle(black_tri.triangle, white_marbles): 
+##			show_triangle_lines.emit(black_tri.triangle, 0)
+#			continue
+#		unblocked_tris.append(black_tri)
+#
+#	for white_tri in white_tris:
+#		if white_delaunay.is_border_triangle(white_tri.triangle): continue
+#		show_triangle_lines.emit(white_tri.triangle, 1)
+#		await get_tree().create_timer(0.1).timeout
+#		if opponent_in_triangle(white_tri.triangle, black_marbles): 
+##			show_triangle_lines.emit(white_tri.triangle, 1)
+#			continue
+#		unblocked_tris.append(white_tri)
+##		count_triangle.emit(white_tri, 1)
+#
+#	unblocked_tris.sort_custom(sort_longer_longest_side)
+#	while unblocked_tris.size() > 0:
+#		var tri = unblocked_tris[0]
+#		unblocked_tris.remove_at(0)
+#		var remove_is = []
+#		for i in range(unblocked_tris.size()):
+#			var other_tri = unblocked_tris[i]
+#			if tri.owner != other_tri.owner && triangle_intersets(tri.triangle, other_tri.triangle):
+#				remove_is.append(i)
+#
+#		remove_is.reverse()
+#		for i in remove_is:
+#			var removing_tri = unblocked_tris[i]
+#			show_triangle_lines.emit(removing_tri.triangle, removing_tri.owner)
+#			unblocked_tris.remove_at(i)
+#
+#		count_triangle.emit(tri.triangle, tri.owner)
+#		await get_tree().create_timer(0.25).timeout
 	
 	finished_scoring.emit()
 

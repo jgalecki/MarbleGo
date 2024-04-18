@@ -6,11 +6,21 @@ class_name ScoreDisplay
 @export var mouse_position:Label
 
 
-func update_scores(scores:Array[float], moves_left:int, current_player:int):
-	current_turn.text = "Black" if current_player == 0 else "White"
+func update_scores(scores:Array[float], turn:int, current_player:int):
+	current_turn.text = ("Black" if current_player == 0 else "White") + " " + str(turn)
 	score.text = "Black: " + str(round(scores[0]) / 100) + ", White: " + str(round(scores[1]) / 100)
 	print("Black: " + str(round(scores[0]) / 100) + ", White: " + str(round(scores[1]) / 100))
 	
-func update_mouse(mouse:Vector2):
-	var on_circle = " x" if mouse.distance_to(Vector2.ZERO) < 256 else ""
-	mouse_position.text = "X: " + str(mouse.x) + ", Y: " + str(mouse.y) + on_circle
+func update_mouse(phase:int, mouse:Vector2):
+	var phase_str = ""
+	match phase:
+		0:
+			phase_str = "Placing"
+		1: 
+			phase_str = "Shooting"
+		2: 
+			phase_str = "Rolling"
+		3:
+			phase_str = "Calculating"
+	
+	mouse_position.text = phase_str +  ". X: " + str(roundi(mouse.x)) + ", Y: " + str(roundi(mouse.y))
