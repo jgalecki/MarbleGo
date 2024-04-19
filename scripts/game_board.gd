@@ -1,31 +1,24 @@
 extends Node2D
 class_name GameBoard
 
-var marble_prefab = preload("res://prefab_scenes/marble.tscn")
+var marble_prefab = preload("res://prefab_scenes/marble_prefab.tscn")
 
-# References to child nodes for drawing
 @export var points_container:PointsContainer
 @export var lines_container:LinesContainer
 @export var triangles_container:TrianglesContainer
-@export var audio_manager:AudioManager
 
-# Store the points added by players
+@export var border_marbles:Array[Marble] = []
 var black_marbles:Array[Marble] = []
 var white_marbles:Array[Marble] = []
+var shooting_marble:Marble
+var last_turn_marble:Marble
 
-
-# Signal to notify when a point is added (for recalculating territories, for example)
 signal marble_added(black_marbles, white_marbles)
 
 func _ready():
 	reset_board()
 
 func reset_board():
-	# Clear existing points, lines, and triangles
-#	pointsContainer.clear() # Assume a clear method exists to remove drawn points
-#	linesContainer.clear() # Similarly, clear drawn lines
-#	trianglesContainer.clear() # Clear shaded triangles
-
 	for line in lines_container.get_children():
 		line.queue_free()
 		
@@ -34,20 +27,43 @@ func reset_board():
 		
 	for triangle in triangles_container.get_children():
 		triangle.queue_free()
+		
+	for border in border_marbles:
+		border.reset()
 
 	white_marbles.clear()
 	black_marbles.clear()
+	last_turn_marble = null
 	# Ready for new points to be added
 
-func add_point(player_id, position) -> bool:
-	# Add the point to the list
-	var marble = marble_prefab.instantiate()
-	points_container.add_child(marble)
-	marble.init(player_id, position)
+func next_turn(player_id):
+	shooting_marble = marble_prefab.instantiate()
+	points_container.add_child(shooting_marble)
+	shooting_marble.freeze = true
+	shooting_marble.collider.disabled = true
 	if player_id == 0:
-		black_marbles.append(marble)
+		black_marbles.append(shooting_marble)
 	else:
-		white_marbles.append(marble)
+		white_marbles.append(shooting_marble)
+	shooting_marble.init(player_id, Vector2(10000, 0), black_marbles.size() + white_marbles.size())
+	
+func remove_unplaced_marble(player_id):
+	points_container.remove_child(shooting_marble)
+	if player_id == 0:
+		black_marbles.remove_at(black_marbles.size() - 1)
+	else:
+		white_marbles.remove_at(black_marbles.size() - 1)
+	shooting_marble.queue_free()
+	
+func move_shot_around_perimeter(position):
+	shooting_marble.position = position
+
+func shoot(direction:Vector2, power:float):
+	shooting_marble.freeze = false
+	shooting_marble.collider.disabled = false
+	shooting_marble.apply_central_impulse(direction * power)
+
+func start_territory_count():
 	
 	for line in lines_container.get_children():
 		line.queue_free()
@@ -56,45 +72,8 @@ func add_point(player_id, position) -> bool:
 		triangle.queue_free()
 	
 	marble_added.emit(black_marbles, white_marbles)
-	audio_manager.playClick()
-	
-	# Draw the point
-#	draw_point(position, player_id)
-#
-#	# Emit signal to recalculate territories
-#	emit_signal("marble_added", position, player_id)
-	
-	# You could also directly call a method to recalculate territories here
-	# and then update the UI accordingly
-	return true
 
-#func draw_point(position, player_id):
-#	var color = Color(0, 0, 0) if player_id == 0 else Color(1, 1, 1)
-#	var point = CircleShape2D.new()
-#	point.radius = 5
-##	point.position = position
-##	point.color = color
-#	var collider = CollisionShape2D.new() # Assuming a method to add children dynamically
-#	collider.reparent(pointsContainer)
-#	collider.shape = point
-#	collider.position = position
-#	collider.color = color
-
-# Placeholder method to draw lines between points
-func draw_lines():
-	# This method would iterate over the points list and draw lines between them
-	# according to the rules of your game (e.g., Delaunay triangulation)
-	pass
-
-# Placeholder method to draw shaded triangles
-func draw_triangles():
-	# This method would handle drawing shaded triangles based on the calculated
-	# territories. It would use the triangulation data to determine which points
-	# form each triangle and then shade them accordingly.
-	pass
-
-
-func _on_territory_count_triangle(triangle: Delaunay.Triangle, player: int, count : int):
+func _on_territory_count_triangle(triangle: Delaunay.Triangle, player: int):
 	var p = PackedVector2Array()
 	p.append(triangle.a)
 	p.append(triangle.b)
@@ -113,10 +92,6 @@ func _on_territory_count_triangle(triangle: Delaunay.Triangle, player: int, coun
 	line.antialiased
 	line.default_color = Color(0, 0, 0) if player == 0 else Color(1, 1, 1)
 	lines_container.add_child(line)
-	if player == 0:
-		audio_manager.playBlackSound(count)
-	else:
-		audio_manager.playWhiteSound(count)
 	
 
 
@@ -130,5 +105,14 @@ func _on_territory_show_triangle_lines(triangle, player):
 	line.points = p
 	line.width = 1
 	line.antialiased
-	line.default_color = Color(0, 0, 0, 0.2) if player == 0 else Color(1, 1, 1, 0.2)
+	line.default_color = Color(0, 0, 0, 0.4) if player == 0 else \
+						 Color(1, 1, 1, 0.4) if player == 1 else \
+						 Color(0.95, 0.827, 0.67, 0.6) if player == 2 else \
+						 Color(0.286, 0.302, 0.494, 0.6) # neutral lines / triangles
 	lines_container.add_child(line)
+
+func update_marbles_after_turn():
+	for black in black_marbles:
+		black.update_after_turn()
+	for white in white_marbles:
+		white.update_after_turn()

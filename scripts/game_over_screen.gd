@@ -11,7 +11,7 @@ func set_scores(black_score:float, white_score:float):
 	elif white_score > black_score:
 		winner_label.text = "WHITE wins!"
 	else:
-		winner_label.text = "TIE, somehow? Lol floating points."
+		winner_label.text = "TIE."
 		
 	black_score_label.text = "BLACK: " + str(round(black_score / 100)) + " points."
 	white_score_label.text = "WHITE: " + str(round(white_score / 100)) + " points."

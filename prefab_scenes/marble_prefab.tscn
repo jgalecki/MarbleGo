@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://c1hg7v7rt06fh"]
+
+[ext_resource type="Script" path="res://scripts/marble.gd" id="1_tqldy"]
+[ext_resource type="Texture2D" uid="uid://ib8aq0x73vqj" path="res://sprites/piece.png" id="2_uvco1"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_skh4d"]
+load_path = "res://.godot/imported/piece.png-626c86524329fb5e0996f5c5006c4203.ctex"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hskn5"]
+radius = 8.0
+
+[node name="Marble" type="RigidBody2D" node_paths=PackedStringArray("sprite", "collider", "shadow")]
+gravity_scale = 0.0
+linear_damp = 1.0
+angular_damp = 1.0
+script = ExtResource("1_tqldy")
+sprite = NodePath("MarbleSprite")
+collider = NodePath("CollisionShape2D")
+shadow = NodePath("Stability Shadow")
+
+[node name="Stability Shadow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.25098)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_uvco1")
+
+[node name="MarbleSprite" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = SubResource("CompressedTexture2D_skh4d")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_hskn5")

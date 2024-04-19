@@ -1,11 +1,11 @@
 xx First weekend: Territory mechanics, basic ui
-  Win / lose screen and game end conditions
-  Marble shooting + physics
-    UI for shooting
-  Special marble types
-    UI for selecting
-  Better UI for territory creation
-    Slower steps, make pausable
+  xx Win / lose screen and game end conditions
+  xx Marble shooting + physics
+    xx UI for shooting
+  __ Special marble types
+    __ UI for selecting
+  __ Better UI for territory creation
+    __ Slower steps, make pausable
   P2P network multiplayer
     Direct connection via IP? No need for "server room" then
     
@@ -38,3 +38,41 @@ idea - marbles have hit points, die when hit twice or three times
 
 problem: last turn is too powerful
 problem: eye-poking too powerful
+
+Week 3
+  xx Passing ends the game
+  xx Stable and Unstable marbles
+    xx Stable marbles can't be moved
+    xx Unstable marbles can be captured
+      xx UI - red shadow for atari marbles
+      xx Capture with current_player before opponent
+      __ Prevent last marble from being captured
+  xx New Delauney triangles between all marbles
+    xx Score territory for having all three vertices
+  
+  Decrease in stability timer?
+  UI mouse over marbles to get turns of stability, closest 4 marbls
+  xx 12 neutral edge marbles?
+  xx Prevent edge stones from being moved during placement
+  
+Week 4
+  Networking
+  Juice
+    Juice list:
+      Stone fired
+        animation + trail
+      Territory scoring
+        Sfx, 
+      Stone captured
+        Particles + screen shake
+      Shot collision
+        Particles + screen shake
+      Stone stabilized
+        Particles
+      Stone in danger
+        Particles
+      Border stone claimed
+        Particles + screen shake
+      Own shot captured
+        Particles
+  

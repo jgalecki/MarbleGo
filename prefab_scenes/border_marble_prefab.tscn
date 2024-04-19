@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bvywj7ouuiva8"]
+
+[ext_resource type="Script" path="res://scripts/border_marble.gd" id="1_4h1lh"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_skh4d"]
+load_path = "res://.godot/imported/piece.png-626c86524329fb5e0996f5c5006c4203.ctex"
+
+[node name="Border Marble" type="RigidBody2D" node_paths=PackedStringArray("sprite")]
+gravity_scale = 0.0
+sleeping = true
+freeze = true
+linear_damp = 1.0
+angular_damp = 1.0
+script = ExtResource("1_4h1lh")
+sprite = NodePath("MarbleSprite")
+
+[node name="MarbleSprite" type="Sprite2D" parent="."]
+modulate = Color(0.94902, 0.827451, 0.670588, 1)
+scale = Vector2(0.25, 0.25)
+texture = SubResource("CompressedTexture2D_skh4d")
