@@ -10,7 +10,7 @@ var rng = RandomNumberGenerator.new()
 @export var audioStreamPlayers: Array[AudioStreamPlayer2D]
 
 var currentPlayer = 0
-
+var nextIdx = 0
 func playSound(sound : AudioStream, random_scale : float = 0.0) -> void:
 	var audioStreamPlayer = audioStreamPlayers[currentPlayer % audioStreamPlayers.size()]
 	currentPlayer = currentPlayer + 1
@@ -33,3 +33,18 @@ func playBlackSound(idx : int) -> void:
 	
 func playClick() -> void:
 	playSound(ClickSound, 0.2)
+
+
+func _on_territory_count_triangle(_triangle:Delaunay.Triangle, player:int):
+	if (player == 0):
+		playWhiteSound(nextIdx)
+	else:
+		playBlackSound(nextIdx)
+	nextIdx = nextIdx + 1
+
+func _on_game_board_marble_added(_black_marbles, _white_marbles):
+	playClick()
+
+
+func _on_game_board_marble_shot(_marble : Marble):
+	playClick()

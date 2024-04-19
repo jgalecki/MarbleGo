@@ -14,6 +14,7 @@ var shooting_marble:Marble
 var last_turn_marble:Marble
 
 signal marble_added(black_marbles, white_marbles)
+signal marble_shot(marble:Marble)
 
 func _ready():
 	reset_board()
@@ -62,6 +63,7 @@ func shoot(direction:Vector2, power:float):
 	shooting_marble.freeze = false
 	shooting_marble.collider.disabled = false
 	shooting_marble.apply_central_impulse(direction * power)
+	marble_shot.emit(shooting_marble)
 
 func start_territory_count():
 	
