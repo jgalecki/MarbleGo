@@ -1,7 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://c1hg7v7rt06fh"]
+[gd_scene load_steps=11 format=3 uid="uid://c1hg7v7rt06fh"]
 
 [ext_resource type="Script" path="res://scripts/marble.gd" id="1_tqldy"]
+[ext_resource type="Script" path="res://addons/trail_2d/trail_2d.gd" id="2_cscpk"]
 [ext_resource type="Texture2D" uid="uid://ib8aq0x73vqj" path="res://sprites/piece.png" id="2_uvco1"]
+
+[sub_resource type="Curve" id="Curve_qgfid"]
+_data = [Vector2(0.144487, 1), 0.0, 0.0, 0, 0, Vector2(0.992395, 0.0315789), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_u53cw"]
+colors = PackedColorArray(0.94902, 0.827451, 0.670588, 1, 0.94902, 0.827451, 0.670588, 0)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_skh4d"]
 load_path = "res://.godot/imported/piece.png-626c86524329fb5e0996f5c5006c4203.ctex"
@@ -9,14 +17,88 @@ load_path = "res://.godot/imported/piece.png-626c86524329fb5e0996f5c5006c4203.ct
 [sub_resource type="CircleShape2D" id="CircleShape2D_hskn5"]
 radius = 8.0
 
-[node name="Marble" type="RigidBody2D" node_paths=PackedStringArray("sprite", "collider", "shadow")]
+[sub_resource type="Animation" id="Animation_1vxik"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MarbleSprite:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.25, 0.25)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MarbleSprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_rm36i"]
+resource_name = "marble_bounce"
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MarbleSprite:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.15, 0.3),
+"transitions": PackedFloat32Array(-2, -2, -2, -2),
+"update": 0,
+"values": [Vector2(0.25, 0.25), Vector2(0.15, 0.35), Vector2(0.31, 0.19), Vector2(0.25, 0.25)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MarbleSprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.15, 0.3),
+"transitions": PackedFloat32Array(-2, -2, -2, -2),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(2, 0), Vector2(0, 0), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gnlhs"]
+_data = {
+"RESET": SubResource("Animation_1vxik"),
+"marble_bounce": SubResource("Animation_rm36i")
+}
+
+[node name="Marble" type="RigidBody2D" node_paths=PackedStringArray("sprite", "collider", "shadow") groups=["marble"]]
 gravity_scale = 0.0
+lock_rotation = true
 linear_damp = 1.0
 angular_damp = 1.0
 script = ExtResource("1_tqldy")
 sprite = NodePath("MarbleSprite")
 collider = NodePath("CollisionShape2D")
 shadow = NodePath("Stability Shadow")
+min_speed_for_major_collision = 300.0
+min_speed_for_minor_collision = 150.0
+
+[node name="Trail2D" type="Line2D" parent="."]
+show_behind_parent = true
+z_index = -10
+width = 8.0
+width_curve = SubResource("Curve_qgfid")
+default_color = Color(0.980392, 0.980392, 0.980392, 1)
+gradient = SubResource("Gradient_u53cw")
+script = ExtResource("2_cscpk")
+length = 12
 
 [node name="Stability Shadow" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.25098)
@@ -29,3 +111,8 @@ texture = SubResource("CompressedTexture2D_skh4d")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_hskn5")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_gnlhs")
+}
