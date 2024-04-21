@@ -1,22 +1,21 @@
-[gd_scene load_steps=15 format=3 uid="uid://sa8uosstnnet"]
+[gd_scene load_steps=14 format=3 uid="uid://b7fsxxoyqnk1f"]
 
-[ext_resource type="Script" path="res://scripts/game_screen.gd" id="1_lm0ql"]
-[ext_resource type="Script" path="res://scripts/camera.gd" id="2_4r44d"]
-[ext_resource type="Script" path="res://scripts/game_board.gd" id="2_u321j"]
-[ext_resource type="Texture2D" uid="uid://cmpt6ee4rgucl" path="res://sprites/game_board.png" id="3_vdwll"]
-[ext_resource type="Script" path="res://scripts/points_container.gd" id="4_cnxt6"]
-[ext_resource type="Script" path="res://scripts/score_display.gd" id="4_k2lgo"]
-[ext_resource type="Script" path="res://scripts/lines_container.gd" id="5_7kgay"]
-[ext_resource type="Script" path="res://scripts/territory.gd" id="5_ep486"]
-[ext_resource type="Script" path="res://scripts/triangles_container.gd" id="6_4wgxr"]
-[ext_resource type="PackedScene" uid="uid://bvywj7ouuiva8" path="res://prefab_scenes/border_marble_prefab.tscn" id="7_vtm5k"]
-[ext_resource type="PackedScene" uid="uid://pp4qma8f5a13" path="res://prefab_scenes/audio_manager.tscn" id="9_bjog8"]
-[ext_resource type="Script" path="res://scripts/game_over_screen.gd" id="9_bnro6"]
-[ext_resource type="Texture2D" uid="uid://nn3qwhrdusww" path="res://sprites/arrow.png" id="10_hqna6"]
-[ext_resource type="Texture2D" uid="uid://b6qqqlegow46e" path="res://sprites/arrow_fill.png" id="11_d8h55"]
+[ext_resource type="Script" path="res://scripts/game_screen.gd" id="1_1u2id"]
+[ext_resource type="Script" path="res://scripts/game_board.gd" id="2_dyunk"]
+[ext_resource type="Texture2D" uid="uid://cmpt6ee4rgucl" path="res://sprites/game_board.png" id="3_en41b"]
+[ext_resource type="Script" path="res://scripts/points_container.gd" id="4_6hp5m"]
+[ext_resource type="Script" path="res://scripts/lines_container.gd" id="5_ljmur"]
+[ext_resource type="Script" path="res://scripts/triangles_container.gd" id="6_mrvla"]
+[ext_resource type="PackedScene" uid="uid://bvywj7ouuiva8" path="res://prefab_scenes/border_marble_prefab.tscn" id="7_rtnew"]
+[ext_resource type="Script" path="res://scripts/territory.gd" id="8_gmri1"]
+[ext_resource type="PackedScene" uid="uid://pp4qma8f5a13" path="res://prefab_scenes/audio_manager.tscn" id="8_yj5ui"]
+[ext_resource type="Script" path="res://scripts/score_display.gd" id="9_qnyv5"]
+[ext_resource type="Script" path="res://scripts/game_over_screen.gd" id="10_eo7pd"]
+[ext_resource type="Texture2D" uid="uid://nn3qwhrdusww" path="res://sprites/arrow.png" id="11_i4wei"]
+[ext_resource type="Texture2D" uid="uid://b6qqqlegow46e" path="res://sprites/arrow_fill.png" id="12_wrpg8"]
 
-[node name="Main2" type="Node2D" node_paths=PackedStringArray("game_board", "game_over_screen", "shooting_arrow", "shooting_fill", "debug_score_display")]
-script = ExtResource("1_lm0ql")
+[node name="Main" type="Node2D" node_paths=PackedStringArray("game_board", "game_over_screen", "shooting_arrow", "shooting_fill", "debug_score_display")]
+script = ExtResource("1_1u2id")
 game_board = NodePath("GameBoard")
 game_over_screen = NodePath("CanvasLayer/GameOverScreen")
 shooting_arrow = NodePath("Shooting Arrow")
@@ -24,27 +23,25 @@ shooting_fill = NodePath("Shooting Arrow/Shooting Fill")
 debug_score_display = NodePath("CanvasLayer/Debug Score Display")
 
 [node name="Camera" type="Camera2D" parent="."]
-script = ExtResource("2_4r44d")
 
 [node name="GameBoard" type="Node2D" parent="." node_paths=PackedStringArray("points_container", "lines_container", "triangles_container", "border_marbles")]
-script = ExtResource("2_u321j")
+script = ExtResource("2_dyunk")
 points_container = NodePath("PointsContainer")
 lines_container = NodePath("LinesContainer")
 triangles_container = NodePath("TrianglesContainer")
 border_marbles = [NodePath("Border Marbles Container/Border Marble"), NodePath("Border Marbles Container/Border Marble2"), NodePath("Border Marbles Container/Border Marble3"), NodePath("Border Marbles Container/Border Marble4"), NodePath("Border Marbles Container/Border Marble5"), NodePath("Border Marbles Container/Border Marble6"), NodePath("Border Marbles Container/Border Marble7"), NodePath("Border Marbles Container/Border Marble8"), NodePath("Border Marbles Container/Border Marble9"), NodePath("Border Marbles Container/Border Marble10"), NodePath("Border Marbles Container/Border Marble11"), NodePath("Border Marbles Container/Border Marble12")]
 
 [node name="Game Board Sprite" type="Sprite2D" parent="GameBoard"]
-z_index = -100
-texture = ExtResource("3_vdwll")
+texture = ExtResource("3_en41b")
 
 [node name="PointsContainer" type="Node2D" parent="GameBoard"]
-script = ExtResource("4_cnxt6")
+script = ExtResource("4_6hp5m")
 
 [node name="LinesContainer" type="Node2D" parent="GameBoard"]
-script = ExtResource("5_7kgay")
+script = ExtResource("5_ljmur")
 
 [node name="TrianglesContainer" type="Node2D" parent="GameBoard"]
-script = ExtResource("6_4wgxr")
+script = ExtResource("6_mrvla")
 
 [node name="Board Borders" type="StaticBody2D" parent="GameBoard"]
 
@@ -54,46 +51,46 @@ polygon = PackedVector2Array(573, -324, 576, 322, -576, 327, -573, -330, -6, -32
 
 [node name="Border Marbles Container" type="Node2D" parent="GameBoard"]
 
-[node name="Border Marble" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(0, -280)
 
-[node name="Border Marble2" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble2" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(140, -242)
 
-[node name="Border Marble3" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble3" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(242, -140)
 
-[node name="Border Marble4" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble4" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(280, 0)
 
-[node name="Border Marble5" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble5" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(242, 140)
 
-[node name="Border Marble6" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble6" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(140, 242)
 
-[node name="Border Marble7" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble7" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(0, 280)
 
-[node name="Border Marble8" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble8" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(-140, 242)
 
-[node name="Border Marble9" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble9" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(-242, 140)
 
-[node name="Border Marble10" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble10" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(-280, 0)
 
-[node name="Border Marble11" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble11" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(-242, -140)
 
-[node name="Border Marble12" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_vtm5k")]
+[node name="Border Marble12" parent="GameBoard/Border Marbles Container" instance=ExtResource("7_rtnew")]
 position = Vector2(-140, -242)
 
-[node name="AudioManager" parent="GameBoard" instance=ExtResource("9_bjog8")]
+[node name="AudioManager" parent="GameBoard" instance=ExtResource("8_yj5ui")]
 
 [node name="Territory" type="Node2D" parent="."]
-script = ExtResource("5_ep486")
+script = ExtResource("8_gmri1")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
@@ -109,7 +106,7 @@ offset_top = -314.0
 offset_right = -612.0
 offset_bottom = -214.0
 grow_horizontal = 0
-script = ExtResource("4_k2lgo")
+script = ExtResource("9_qnyv5")
 current_turn = NodePath("PanelContainer/MarginContainer/VBoxContainer/GridContainer/Current Turn")
 score = NodePath("PanelContainer/MarginContainer/VBoxContainer/GridContainer/Score")
 mouse_position = NodePath("PanelContainer/MarginContainer/VBoxContainer/GridContainer/Mouse Position")
@@ -173,7 +170,7 @@ offset_left = 98.2401
 offset_top = 67.296
 offset_right = -78.0
 offset_bottom = -33.0
-script = ExtResource("9_bnro6")
+script = ExtResource("10_eo7pd")
 winner_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/Winner Label")
 black_score_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/Black Score Label")
 white_score_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/White Score Label")
@@ -224,11 +221,11 @@ text = "Restart"
 
 [node name="Shooting Arrow" type="Sprite2D" parent="."]
 visible = false
-texture = ExtResource("10_hqna6")
+texture = ExtResource("11_i4wei")
 
 [node name="Shooting Fill" type="Sprite2D" parent="Shooting Arrow"]
 modulate = Color(0.94902, 0.827451, 0.670588, 1)
-texture = ExtResource("11_d8h55")
+texture = ExtResource("12_wrpg8")
 
 [connection signal="marble_added" from="GameBoard" to="GameBoard/AudioManager" method="_on_game_board_marble_added"]
 [connection signal="marble_added" from="GameBoard" to="Territory" method="_on_marble_added"]

@@ -1,13 +1,13 @@
-Timer
-GPUParticles2D
-Trail2D
-AnimationPlayer
+AudioStreamPlayer2D
+AudioStreamPlayer3D
+AudioManager
 Node2D
 Sprite2D
 Button
 VBoxContainer
 CollisionPolygon2D
 CollisionShape2D
+AnimationPlayer
 StaticBody2D
 Control
 Label

@@ -8,6 +8,8 @@ radius = 8.0
 
 [node name="Marble" type="RigidBody2D" node_paths=PackedStringArray("sprite", "collider")]
 gravity_scale = 0.0
+max_contacts_reported = 4
+contact_monitor = true
 script = ExtResource("1_8mmhb")
 sprite = NodePath("MarbleSprite")
 collider = NodePath("CollisionShape2D")

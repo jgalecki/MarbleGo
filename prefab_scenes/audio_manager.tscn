@@ -1,0 +1,30 @@
+[gd_scene load_steps=13 format=3 uid="uid://pp4qma8f5a13"]
+
+[ext_resource type="Script" path="res://scripts/audio_manager.gd" id="1_kn22w"]
+[ext_resource type="AudioStream" uid="uid://bussqb0lstdnp" path="res://audio/white_c.wav" id="2_hx6qu"]
+[ext_resource type="AudioStream" uid="uid://cn3xb1avn210r" path="res://audio/white_d6.wav" id="3_7mgfn"]
+[ext_resource type="AudioStream" uid="uid://ce6eyu3h4l6ui" path="res://audio/white_e6.wav" id="4_7fokv"]
+[ext_resource type="AudioStream" uid="uid://dpb6jqo2ewq4i" path="res://audio/white_g5.wav" id="5_mqw5s"]
+[ext_resource type="AudioStream" uid="uid://bdluvdl8lwug5" path="res://audio/white_bflat_5.wav" id="6_t8ocx"]
+[ext_resource type="AudioStream" uid="uid://dh41ldipaoqrk" path="res://audio/black_c5.wav" id="7_rh2x8"]
+[ext_resource type="AudioStream" uid="uid://c77j1r1m06y43" path="res://audio/black_d6.wav" id="8_j30s1"]
+[ext_resource type="AudioStream" uid="uid://ckpk83eqahcx4" path="res://audio/black_e6.wav" id="9_exynr"]
+[ext_resource type="AudioStream" uid="uid://44qtumbme8go" path="res://audio/black_g5.wav" id="10_gv27n"]
+[ext_resource type="AudioStream" uid="uid://cdt4aiem2u0l3" path="res://audio/black_bflat_5.wav" id="11_mh30y"]
+[ext_resource type="AudioStream" uid="uid://bka2ii2b4pb75" path="res://audio/gokado.mp3" id="12_u7e7a"]
+
+[node name="AudioManager" type="Node" node_paths=PackedStringArray("audioStreamPlayers")]
+script = ExtResource("1_kn22w")
+whiteSounds = Array[AudioStream]([ExtResource("2_hx6qu"), ExtResource("3_7mgfn"), ExtResource("4_7fokv"), ExtResource("5_mqw5s"), ExtResource("6_t8ocx")])
+blackSounds = Array[AudioStream]([ExtResource("7_rh2x8"), ExtResource("8_j30s1"), ExtResource("9_exynr"), ExtResource("10_gv27n"), ExtResource("11_mh30y")])
+audioStreamPlayers = [NodePath("AudioStreamPlayer2D"), NodePath("AudioStreamPlayer2D2"), NodePath("AudioStreamPlayer2D3")]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="AudioStreamPlayer2D2" type="AudioStreamPlayer2D" parent="."]
+
+[node name="AudioStreamPlayer2D3" type="AudioStreamPlayer2D" parent="."]
+
+[node name="Music" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_u7e7a")
+autoplay = true
