@@ -50,8 +50,8 @@ func playShot(volume : float) -> void:
 func playPlink(volume : float) -> void:
 	playSound(PlinkSound, 0.2, volume)
 
-func _on_territory_count_triangle(_triangle:Delaunay.Triangle, player:int):
-	if (player == 0):
+func _on_territory_count_triangle(triangle):
+	if (triangle.owner == 0):
 		playWhiteSound(nextIdx)
 	else:
 		playBlackSound(nextIdx)
