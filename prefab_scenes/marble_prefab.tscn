@@ -11,6 +11,8 @@ radius = 8.0
 
 [node name="Marble" type="RigidBody2D" node_paths=PackedStringArray("sprite", "collider", "shadow")]
 gravity_scale = 0.0
+max_contacts_reported = 4
+contact_monitor = true
 linear_damp = 1.0
 angular_damp = 1.0
 script = ExtResource("1_tqldy")
