@@ -1,0 +1,53 @@
+[gd_scene load_steps=8 format=3 uid="uid://dynoc585g2v0n"]
+
+[ext_resource type="Texture2D" uid="uid://ib8aq0x73vqj" path="res://sprites/piece.png" id="1_6geh4"]
+[ext_resource type="Script" path="res://scripts/particles.gd" id="2_tqogv"]
+
+[sub_resource type="Curve" id="Curve_jjeji"]
+min_value = -2.0
+max_value = 3.0
+_data = [Vector2(0, 0.0210526), 0.0, 2.17684, 0, 0, Vector2(1, 2.68421), 2.88032, 0.0, 1, 0]
+point_count = 2
+metadata/_snap_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_hpcd3"]
+curve = SubResource("Curve_jjeji")
+
+[sub_resource type="Curve" id="Curve_adsmh"]
+_data = [Vector2(0, 0), 0.0, -1.00284, 0, 0, Vector2(0.531915, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.26526, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_lqta1"]
+curve = SubResource("Curve_adsmh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hi4vi"]
+lifetime_randomness = 0.26
+particle_flag_disable_z = true
+direction = Vector3(0, 0, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 80.0
+initial_velocity_max = 80.0
+orbit_velocity_min = 0.1
+orbit_velocity_max = 0.4
+orbit_velocity_curve = SubResource("CurveTexture_hpcd3")
+radial_accel_min = 50.0
+radial_accel_max = 60.0
+damping_min = 80.0
+damping_max = 80.0
+scale_min = 0.1
+scale_max = 0.15
+scale_curve = SubResource("CurveTexture_lqta1")
+
+[node name="Atari Particles" type="GPUParticles2D"]
+modulate = Color(0.776471, 0.623529, 0.647059, 1)
+emitting = false
+amount = 20
+process_material = SubResource("ParticleProcessMaterial_hi4vi")
+texture = ExtResource("1_6geh4")
+lifetime = 2.0
+one_shot = true
+explosiveness = 0.85
+script = ExtResource("2_tqogv")
+
+[node name="Timer" type="Timer" parent="."]

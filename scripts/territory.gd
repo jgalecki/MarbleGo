@@ -4,20 +4,28 @@ class_name Territory
 #===================================
 class Tri:
 	var owner:int
-	var index:int
 	var triangle:Delaunay.Triangle
+	var area:float
 	
-	func _init(owner:int, index:int, triangle:Delaunay.Triangle):
+	func _init(owner:int, triangle:Delaunay.Triangle):
 		self.owner = owner
-		self.index = index
 		self.triangle = triangle
+		
+		var a = triangle.edge_ab.length()
+		var b = triangle.edge_bc.length()
+		var c = triangle.edge_ca.length()
+		var first = a + b + c
+		var second = -a + b + c
+		var third = a - b + c
+		var fourth = a + b - c
+		area = sqrt(first * second * third * fourth) / 4
 #===================================
 
 var all_delaunay:Delaunay
 #var black_delaunay:Delaunay
 #var white_delaunay:Delaunay
 
-signal count_triangle(triangle:Delaunay.Triangle, player:int)
+signal count_triangle(tri:Tri)
 signal show_triangle_lines(triangle:Delaunay.Triangle, player:int)
 signal finished_scoring()
 
@@ -68,11 +76,16 @@ func _on_marble_added(black_marbles:Array[Marble], white_marbles:Array[Marble]):
 			_:
 				assert(false)
 			
+	var tris:Array[Tri] = []		
+			
 	for black_triangle in black_triangles:
-		count_triangle.emit(black_triangle, 0)
-		await get_tree().create_timer(0.10).timeout
+		tris.append(Tri.new(0, black_triangle))
 	for white_triangle in white_triangles:
-		count_triangle.emit(white_triangle, 1)
+		tris.append(Tri.new(1, white_triangle))
+
+	tris.sort_custom(func(a,b): return a.area < b.area)
+	for tri in tris:
+		count_triangle.emit(tri)
 		await get_tree().create_timer(0.10).timeout
 		
 			

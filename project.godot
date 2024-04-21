@@ -22,7 +22,7 @@ project/assembly_name="Marble Go"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdDelaunay/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdDelaunay/plugin.cfg", "res://addons/trail_2d/plugin.cfg")
 
 [input]
 
