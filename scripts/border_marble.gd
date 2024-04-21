@@ -22,11 +22,15 @@ func update_after_turn():
 	var white_count = nearest_marbles.filter(func(m): return m != null && m.player == 1).size()
 	if black_count == 5:
 		stable = true
+		spawn_stabalize_particles()
+		camera.shake(500, 1)
 		player = 0
 		sprite.modulate = Color(0, 0, 0)
 		flag_to_claim = true
 	elif white_count == 5:
 		stable = true
+		spawn_stabalize_particles()
+		camera.shake(500, 1)
 		player = 1
 		sprite.modulate = Color(1, 1, 1)
 		flag_to_claim = true

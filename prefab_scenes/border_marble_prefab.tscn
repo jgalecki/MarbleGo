@@ -15,6 +15,6 @@ script = ExtResource("1_4h1lh")
 sprite = NodePath("MarbleSprite")
 
 [node name="MarbleSprite" type="Sprite2D" parent="."]
-modulate = Color(0.94902, 0.827451, 0.670588, 1)
+modulate = Color(0.94902, 0.827451, 0.631373, 1)
 scale = Vector2(0.25, 0.25)
 texture = SubResource("CompressedTexture2D_skh4d")

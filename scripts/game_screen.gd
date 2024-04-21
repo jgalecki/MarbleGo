@@ -2,7 +2,7 @@ extends Node
 
 var current_player:int = 0 	# 0 is black, 1 is white
 var current_turn:int = 0
-var check_for_end_turn:int = 40
+var check_for_end_turn:int = 41
 var player_scores:Array[float] = [0, 0]
 
 # Ugh, didn't bring GameScreen idea over. So now there's more state...
@@ -20,8 +20,7 @@ var shooting_timer:float
 var shooting_strength:float
 
 @export var debug_score_display:ScoreDisplay
-
-var last_turn_passed:bool
+var explode_particle_prefab = preload("res://prefab_scenes/explode_particles.tscn")
 
 func _ready():
 	reset_game()
@@ -103,9 +102,9 @@ func handle_input():
 			shooting_arrow.visible = true
 			shooting_arrow.position = game_board.shooting_marble.position
 			shooting_timer = 0
+			game_board.shooting_marble.camera = camera
 			
 	elif is_rolling:
-		last_turn_passed = false
 		debug_score_display.update_mouse(2, mouse_world_position)
 		var all_done_rolling = true
 		for black_marble in game_board.black_marbles:
@@ -117,6 +116,9 @@ func handle_input():
 				
 		if all_done_rolling:
 			is_rolling = false
+			game_board.shooting_marble.is_shooting = false
+			game_board.shooting_marble.shadow.visible = true
+			game_board.shooting_marble.trail_2d.visible = false
 			var player = "BLACK" if current_player == 0 else "WHITE"
 			print(player + " is done with their turn.")
 			update_borders()
@@ -132,7 +134,6 @@ func reset_game():
 	player_scores = [0.0, 0.0]
 	
 	game_over = false
-	last_turn_passed = false
 	if game_over_screen.visible:
 		game_over_screen.visible = false
 
@@ -141,6 +142,8 @@ func reset_game():
 	#gameOverScreen.hide()
 	is_placing = true
 	game_board.next_turn(current_player)
+	for border_marble in game_board.border_marbles:
+		border_marble.camera = camera
 	
 	update_ui()
 
@@ -165,16 +168,8 @@ func end_game():
 		game_over_screen.visible = true
 	
 
-func _on_territory_count_triangle(triangle:Delaunay.Triangle, player:int):
-	var a = triangle.edge_ab.length()
-	var b = triangle.edge_bc.length()
-	var c = triangle.edge_ca.length()
-	var first = a + b + c
-	var second = -a + b + c
-	var third = a - b + c
-	var fourth = a + b - c
-	var area = sqrt(first * second * third * fourth) / 4
-	player_scores[player] += area
+func _on_territory_count_triangle(tri:Territory.Tri):
+	player_scores[tri.owner] += tri.area
 	
 	update_ui()
 
@@ -196,17 +191,21 @@ func _on_territory_finished_scoring():
 		update_ui()
 		switch_turns()
 		game_board.next_turn(current_player)
+			
+		for black_marble in game_board.black_marbles:
+			black_marble.spawned_particles_this_turn = false
+		for white_marble in game_board.white_marbles:
+			white_marble.spawned_particles_this_turn = false
 
 func _on_restart_button_pressed():
 	reset_game()
 
 
 func _on_pass_button_pressed():
-	if last_turn_passed:
+	if player_scores[current_player] < player_scores[1 - current_player]:
 		end_game()
-	elif is_placing || is_shooting:
-		last_turn_passed = true
 		
+	elif is_placing || is_shooting:
 		game_board.remove_unplaced_marble(current_player)
 		is_placing = true
 		is_shooting = false
@@ -269,25 +268,20 @@ func get_closest_marbles(position:Vector2, limit:int) -> Array[Marble]:
 		return position.distance_to(a.position) < position.distance_to(b.position))
 	return nearest.slice(0, limit)
 		
-# NOTE! allows capturing of stable marbles right now...
 func capture_white_marbles():
 	var dead_marbles = []
 	for i in range(game_board.white_marbles.size()):
 		var white = game_board.white_marbles[i]
-#		for nearest in white.nearest_marbles:
-#			print("Marble " + str(white.placed_index) + " has closest neighbor of " \
-#				+ str(nearest.placed_index) + ", owned by " + str(nearest.player))
-#			if nearest.player == 1:
-#				print("Owned by WHITE")
-#		var white_neighbors = white.nearest_marbles.any(func(m): return m.player == 1)
-#		if white_neighbors:
-#			print("Has any WHITE nearest neighbor")
 		if not white.stable \
 		   && not white.nearest_marbles.any(func(m): return m == null || m.player == 1) \
 		   && white.nearest_marbles.size() == 4:
 			dead_marbles.append(i)
+			var particles:GPUParticles2D = explode_particle_prefab.instantiate()
+			get_tree().current_scene.add_child(particles)
+			particles.position = white.position
+			hit_lag(0.2, 1)
+			camera.shake(1000, 1)
 	for i in dead_marbles:
-		print("REMOVING white marble index " + str(i))
 		var dead = game_board.white_marbles[i]
 		game_board.white_marbles.remove_at(i)
 		for child in dead.get_children():
@@ -302,6 +296,12 @@ func capture_black_marbles():
 		   && not black.nearest_marbles.any(func(m): return m == null || m.player == 0) \
 		   && black.nearest_marbles.size() == 4:
 			dead_marbles.append(i)
+			var particles:GPUParticles2D = explode_particle_prefab.instantiate()
+			get_tree().current_scene.add_child(particles)
+			particles.modulate = Color(0, 0, 0)
+			particles.position = black.position
+			hit_lag(0.2, 1)
+			camera.shake(1000, 1)
 	for i in dead_marbles:
 		print("REMOVING black marble index " + str(i))
 		var dead = game_board.black_marbles[i]
@@ -309,4 +309,11 @@ func capture_black_marbles():
 		for child in dead.get_children():
 			child.queue_free()
 		dead.queue_free()
-	
+
+
+func hit_lag(scale, duration):
+	if Engine.time_scale < scale:
+		return
+	Engine.time_scale = scale
+	await get_tree().create_timer(scale * duration).timeout
+	Engine.time_scale = 1

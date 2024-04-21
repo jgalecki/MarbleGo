@@ -50,29 +50,45 @@ Week 3
   xx New Delauney triangles between all marbles
     xx Score territory for having all three vertices
   
-  Decrease in stability timer?
-  UI mouse over marbles to get turns of stability, closest 4 marbls
+  __ Decrease in stability timer?
+  __ UI mouse over marbles to get turns of stability, closest 4 marbls
   xx 12 neutral edge marbles?
   xx Prevent edge stones from being moved during placement
   
+  xx Count triangles from total area, not from 
+  __ Resign button
+  xx If lowest-scoring player passes, end the game
+  
+  xx Juice
+    xx Juice list (minus sfx)
+      xx Stone fired
+        xx animation + xx trail
+      xx Stone captured
+        xx Particles
+        xx Make particles of the color instead of yellow  
+        xx screen shake
+      xx Shot collision
+        xx Particles
+        xx Hit stop
+        xx screen shake
+      xx Stone stabilized
+        xx Particles
+      xx Stone in danger
+        xx Particles
+      xx Border stone claimed
+        xx Particles 
+        xx screen shake
+      __ Own shot captured
+        __ Particles
+        
+  Music
+  Sfx
+  
 Week 4
   Networking
-  Juice
-    Juice list:
-      Stone fired
-        animation + trail
-      Territory scoring
-        Sfx, 
-      Stone captured
-        Particles + screen shake
-      Shot collision
-        Particles + screen shake
-      Stone stabilized
-        Particles
-      Stone in danger
-        Particles
-      Border stone claimed
-        Particles + screen shake
-      Own shot captured
-        Particles
-  
+        
+  Title screen
+  Connection Screen
+  Slightly better UI - panels, buttons
+  Better shooting UI
+  Rules screen

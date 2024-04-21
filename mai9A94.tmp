@@ -1,7 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://sa8uosstnnet"]
+[gd_scene load_steps=13 format=3 uid="uid://sa8uosstnnet"]
 
 [ext_resource type="Script" path="res://scripts/game_screen.gd" id="1_lm0ql"]
-[ext_resource type="Script" path="res://scripts/camera.gd" id="2_4r44d"]
 [ext_resource type="Script" path="res://scripts/game_board.gd" id="2_u321j"]
 [ext_resource type="Texture2D" uid="uid://cmpt6ee4rgucl" path="res://sprites/game_board.png" id="3_vdwll"]
 [ext_resource type="Script" path="res://scripts/points_container.gd" id="4_cnxt6"]
@@ -23,7 +22,6 @@ shooting_fill = NodePath("Shooting Arrow/Shooting Fill")
 debug_score_display = NodePath("CanvasLayer/Debug Score Display")
 
 [node name="Camera" type="Camera2D" parent="."]
-script = ExtResource("2_4r44d")
 
 [node name="GameBoard" type="Node2D" parent="." node_paths=PackedStringArray("points_container", "lines_container", "triangles_container", "border_marbles")]
 script = ExtResource("2_u321j")
