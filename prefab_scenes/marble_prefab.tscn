@@ -1,8 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://c1hg7v7rt06fh"]
+[gd_scene load_steps=13 format=3 uid="uid://c1hg7v7rt06fh"]
 
 [ext_resource type="Script" path="res://scripts/marble.gd" id="1_tqldy"]
 [ext_resource type="Script" path="res://addons/trail_2d/trail_2d.gd" id="2_cscpk"]
 [ext_resource type="Texture2D" uid="uid://ib8aq0x73vqj" path="res://sprites/piece.png" id="2_uvco1"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_d1e4r"]
+bounce = 0.2
 
 [sub_resource type="Curve" id="Curve_qgfid"]
 _data = [Vector2(0.144487, 1), 0.0, 0.0, 0, 0, Vector2(0.992395, 0.0315789), 0.0, 0.0, 0, 0]
@@ -78,10 +81,31 @@ _data = {
 "marble_bounce": SubResource("Animation_rm36i")
 }
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pgjtf"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+properties/1/path = NodePath(".:freeze")
+properties/1/spawn = true
+properties/1/sync = true
+properties/1/watch = false
+properties/2/path = NodePath(".:linear_velocity")
+properties/2/spawn = true
+properties/2/sync = true
+properties/2/watch = false
+properties/3/path = NodePath(".:sleeping")
+properties/3/spawn = true
+properties/3/sync = true
+properties/3/watch = false
+properties/4/path = NodePath(".:player")
+properties/4/spawn = true
+properties/4/sync = true
+properties/4/watch = false
+
 [node name="Marble" type="RigidBody2D" node_paths=PackedStringArray("sprite", "collider", "shadow") groups=["marble"]]
+physics_material_override = SubResource("PhysicsMaterial_d1e4r")
 gravity_scale = 0.0
-max_contacts_reported = 4
-contact_monitor = true
 lock_rotation = true
 linear_damp = 1.0
 angular_damp = 1.0
@@ -118,3 +142,6 @@ shape = SubResource("CircleShape2D_hskn5")
 libraries = {
 "": SubResource("AnimationLibrary_gnlhs")
 }
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_pgjtf")

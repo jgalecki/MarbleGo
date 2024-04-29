@@ -1,8 +1,7 @@
-res://prefab_scenes/marble_prefab.tscn
-res://scripts/border_marble.gd
-res://prefab_scenes/border_marble_prefab.tscn
-res://scripts/game_board.gd
+res://scenes/main.tscn
+res://scripts/globals.gd
 res://scripts/game_screen.gd
-res://main.tscn
-res://scripts/marble.gd
-res://scripts/score_display.gd
+res://prefab_scenes/marble_prefab.tscn
+res://scenes/title_screen.tscn
+res://prefab_scenes/audio_manager.tscn
+res://prefab_scenes/border_marble_prefab.tscn

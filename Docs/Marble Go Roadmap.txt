@@ -86,9 +86,22 @@ Week 3
   
 Week 4
   Networking
+    xx Networking components
+    bug: H1 G0: Guest calculating territory as if all marbles were black
+    bug: H1 G0: after host plays a white marble, it teleports (after territory calc?)
+      Warps back to initial post
         
   Title screen
   Connection Screen
+  
+Week 5+
   Slightly better UI - panels, buttons
   Better shooting UI
   Rules screen
+  Credits screen
+  
+  More dynamic camera - zoom during collisions?
+  Flash red for atari
+  Spawning animation for border marbles
+  
+  Options screen - sound and music

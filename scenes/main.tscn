@@ -1,0 +1,400 @@
+[gd_scene load_steps=16 format=3 uid="uid://sa8uosstnnet"]
+
+[ext_resource type="Script" path="res://scripts/game_screen.gd" id="1_0kutb"]
+[ext_resource type="Script" path="res://scripts/camera.gd" id="2_8j2m7"]
+[ext_resource type="Script" path="res://scripts/game_board.gd" id="3_obnnk"]
+[ext_resource type="Texture2D" uid="uid://cmpt6ee4rgucl" path="res://sprites/game_board.png" id="4_iw1xt"]
+[ext_resource type="Script" path="res://scripts/points_container.gd" id="5_v1dqb"]
+[ext_resource type="Script" path="res://scripts/lines_container.gd" id="6_hu0w3"]
+[ext_resource type="Script" path="res://scripts/triangles_container.gd" id="7_n2agg"]
+[ext_resource type="PackedScene" uid="uid://bvywj7ouuiva8" path="res://prefab_scenes/border_marble_prefab.tscn" id="8_dxxxh"]
+[ext_resource type="Script" path="res://scripts/territory.gd" id="9_4yvqh"]
+[ext_resource type="PackedScene" uid="uid://dq76kqw6pgnfa" path="res://prefab_scenes/audio_manager.tscn" id="9_jvejj"]
+[ext_resource type="Script" path="res://scripts/score_display.gd" id="10_8oc8v"]
+[ext_resource type="Script" path="res://scripts/game_over_screen.gd" id="11_4riqs"]
+[ext_resource type="Texture2D" uid="uid://nn3qwhrdusww" path="res://sprites/arrow.png" id="12_ekp2t"]
+[ext_resource type="Script" path="res://scripts/player_assignment_screen.gd" id="13_0ermv"]
+[ext_resource type="Texture2D" uid="uid://b6qqqlegow46e" path="res://sprites/arrow_fill.png" id="13_q0lfy"]
+
+[node name="Main" type="Node2D" node_paths=PackedStringArray("game_board", "game_over_screen", "shooting_arrow", "shooting_fill", "debug_score_display")]
+script = ExtResource("1_0kutb")
+game_board = NodePath("GameBoard")
+game_over_screen = NodePath("CanvasLayer/GameOverScreen")
+shooting_arrow = NodePath("Shooting Arrow")
+shooting_fill = NodePath("Shooting Arrow/Shooting Fill")
+debug_score_display = NodePath("CanvasLayer/Debug Score Display")
+
+[node name="Camera" type="Camera2D" parent="."]
+zoom = Vector2(1.4, 1.4)
+script = ExtResource("2_8j2m7")
+
+[node name="GameBoard" type="Node2D" parent="." node_paths=PackedStringArray("points_container", "lines_container", "triangles_container", "border_marbles")]
+script = ExtResource("3_obnnk")
+points_container = NodePath("PointsContainer")
+lines_container = NodePath("LinesContainer")
+triangles_container = NodePath("TrianglesContainer")
+border_marbles = [NodePath("Border Marbles Container/Border Marble"), NodePath("Border Marbles Container/Border Marble2"), NodePath("Border Marbles Container/Border Marble3"), NodePath("Border Marbles Container/Border Marble4"), NodePath("Border Marbles Container/Border Marble5"), NodePath("Border Marbles Container/Border Marble6"), NodePath("Border Marbles Container/Border Marble7"), NodePath("Border Marbles Container/Border Marble8"), NodePath("Border Marbles Container/Border Marble9"), NodePath("Border Marbles Container/Border Marble10"), NodePath("Border Marbles Container/Border Marble11"), NodePath("Border Marbles Container/Border Marble12")]
+
+[node name="Game Board Sprite" type="Sprite2D" parent="GameBoard"]
+z_index = -100
+texture = ExtResource("4_iw1xt")
+
+[node name="PointsContainer" type="Node2D" parent="GameBoard"]
+script = ExtResource("5_v1dqb")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="GameBoard/PointsContainer"]
+
+[node name="LinesContainer" type="Node2D" parent="GameBoard"]
+script = ExtResource("6_hu0w3")
+
+[node name="TrianglesContainer" type="Node2D" parent="GameBoard"]
+script = ExtResource("7_n2agg")
+
+[node name="Board Borders" type="StaticBody2D" parent="GameBoard"]
+
+[node name="Solid Outside CollisionPolygon" type="CollisionPolygon2D" parent="GameBoard/Board Borders"]
+position = Vector2(1, 0)
+polygon = PackedVector2Array(573, -324, 576, 322, -576, 327, -573, -330, -6, -327, -4, -264, -47, -260, -91, -248, -135, -228, -188, -188, -220, -149, -244, -107, -263, -59, -269, -14, -269, 18, -263, 58, -247, 100, -226, 141, -196, 181, -160, 212, -121, 236, -82, 255, -29, 265, 19, 265, 57, 260, 108, 245, 149, 224, 185, 195, 218, 155, 243, 116, 262, 71, 268, 23, 268, -22, 262, -69, 245, -112, 222, -154, 173, -205, 128, -235, 62, -259, 2, -265, 1, -327)
+
+[node name="Border Marbles Container" type="Node2D" parent="GameBoard"]
+
+[node name="Border Marble" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(0, -280)
+
+[node name="Border Marble2" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(140, -242)
+
+[node name="Border Marble3" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(242, -140)
+
+[node name="Border Marble4" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(280, 0)
+
+[node name="Border Marble5" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(242, 140)
+
+[node name="Border Marble6" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(140, 242)
+
+[node name="Border Marble7" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(0, 280)
+
+[node name="Border Marble8" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(-140, 242)
+
+[node name="Border Marble9" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(-242, 140)
+
+[node name="Border Marble10" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(-280, 0)
+
+[node name="Border Marble11" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(-242, -140)
+
+[node name="Border Marble12" parent="GameBoard/Border Marbles Container" instance=ExtResource("8_dxxxh")]
+position = Vector2(-140, -242)
+
+[node name="AudioManager" parent="GameBoard" instance=ExtResource("9_jvejj")]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="GameBoard"]
+_spawnable_scenes = PackedStringArray("res://prefab_scenes/marble_prefab.tscn")
+spawn_path = NodePath("../PointsContainer")
+
+[node name="Territory" type="Node2D" parent="."]
+script = ExtResource("9_4yvqh")
+
+[node name="Shooting Arrow" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("12_ekp2t")
+
+[node name="Shooting Fill" type="Sprite2D" parent="Shooting Arrow"]
+modulate = Color(0.94902, 0.827451, 0.670588, 1)
+texture = ExtResource("13_q0lfy")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Debug Score Display" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("current_turn", "score", "mouse_position")]
+custom_minimum_size = Vector2(320, 141)
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_top = 25.0
+offset_right = -25.0
+offset_bottom = -319.0
+grow_horizontal = 0
+script = ExtResource("10_8oc8v")
+current_turn = NodePath("PanelContainer/MarginContainer/VBoxContainer/GridContainer/Current Turn")
+score = NodePath("PanelContainer/MarginContainer/VBoxContainer/GridContainer/Score")
+mouse_position = NodePath("PanelContainer/MarginContainer/VBoxContainer/GridContainer/Mouse Position")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Debug Score Display"]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 86.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Debug Score Display/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+columns = 2
+
+[node name="Current Turn Header" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Current Turn:"
+
+[node name="Current Turn" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Black"
+
+[node name="Score Header" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Score:"
+
+[node name="Score" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Black: 000, White 000"
+
+[node name="Mouse Header" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Mouse:"
+
+[node name="Mouse Position" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "x: 5000, y: 1000"
+
+[node name="Pass Button" type="Button" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Pass"
+
+[node name="GameOverScreen" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("winner_label", "black_score_label", "white_score_label")]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -438.0
+offset_top = -287.0
+offset_right = -438.0
+offset_bottom = -287.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("11_4riqs")
+winner_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/Winner Label")
+black_score_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/Black Score Label")
+white_score_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/White Score Label")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/GameOverScreen"]
+layout_mode = 0
+offset_right = 972.0
+offset_bottom = 555.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GameOverScreen/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Winner Label" type="Label" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "BLACK wins!"
+horizontal_alignment = 1
+
+[node name="Black Score Label" type="Label" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "BLACK: 512 points."
+horizontal_alignment = 1
+
+[node name="White Score Label" type="Label" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "WHITE: 251 points."
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Button" type="Button" parent="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 36
+text = "Restart"
+
+[node name="Player Assignment Screen" type="Control" parent="CanvasLayer"]
+visible = false
+custom_minimum_size = Vector2(600, 200)
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -100.0
+offset_right = 300.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(0.5, 0)
+script = ExtResource("13_0ermv")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Player Assignment Screen"]
+custom_minimum_size = Vector2(600, 200)
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 250.0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Player Assignment Screen/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Player Assignment Screen/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Player 1 Label" type="Label" parent="CanvasLayer/Player Assignment Screen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Player 1:  Black"
+horizontal_alignment = 1
+
+[node name="Player 2 Label" type="Label" parent="CanvasLayer/Player Assignment Screen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Player 2: White"
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="CanvasLayer/Player Assignment Screen/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Player Assignment Button" type="Button" parent="CanvasLayer/Player Assignment Screen/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "OK"
+
+[node name="Negotiate Colors" type="PanelContainer" parent="CanvasLayer"]
+custom_minimum_size = Vector2(0, 550)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -246.5
+offset_top = -86.0
+offset_right = 246.5
+offset_bottom = 86.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Negotiate Colors"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Negotiate Colors/MarginContainer"]
+layout_mode = 2
+
+[node name="Header" type="Label" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Bid to play as Black"
+horizontal_alignment = 1
+
+[node name="Control2" type="Control" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Player Label" type="Label" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Player 1"
+horizontal_alignment = 1
+
+[node name="Bid Explanation" type="Label" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "How many points should White be given at
+the end of the game? The player that bids
+the higher number will play as Black.
+
+(This number can be negative if you think
+that White has the advantage.)"
+
+[node name="Control" type="Control" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Bid Explanation" type="Label" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "Bid: "
+
+[node name="Bid Amount" type="TextEdit" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 35)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "0"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Waiting Label" type="Label" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer/HBoxContainer2"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "Player Foo has bid. "
+
+[node name="Control" type="Control" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Bid Button" type="Button" parent="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Bid"
+
+[connection signal="marble_added" from="GameBoard" to="GameBoard/AudioManager" method="_on_game_board_marble_added"]
+[connection signal="marble_added" from="GameBoard" to="Territory" method="_on_marble_added"]
+[connection signal="marble_shot" from="GameBoard" to="GameBoard/AudioManager" method="_on_game_board_marble_shot"]
+[connection signal="count_triangle" from="Territory" to="." method="_on_territory_count_triangle"]
+[connection signal="count_triangle" from="Territory" to="GameBoard" method="_on_territory_count_triangle"]
+[connection signal="count_triangle" from="Territory" to="GameBoard/AudioManager" method="_on_territory_count_triangle"]
+[connection signal="finished_scoring" from="Territory" to="." method="_on_territory_finished_scoring"]
+[connection signal="show_triangle_lines" from="Territory" to="GameBoard" method="_on_territory_show_triangle_lines"]
+[connection signal="pressed" from="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/Pass Button" to="." method="_on_pass_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer/Button" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Player Assignment Screen/PanelContainer/MarginContainer/VBoxContainer/Player Assignment Button" to="." method="_on_player_assignment_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Player Assignment Screen/PanelContainer/MarginContainer/VBoxContainer/Player Assignment Button" to="CanvasLayer/Player Assignment Screen" method="_on_player_assignment_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Negotiate Colors/MarginContainer/VBoxContainer/HBoxContainer2/Bid Button" to="." method="_on_bid_button_pressed"]

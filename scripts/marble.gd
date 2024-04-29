@@ -17,7 +17,7 @@ var atair_particles_prefab = preload("res://prefab_scenes/atari_particles.tscn")
 var spawned_particles_this_turn:bool
 var is_shooting:bool
 
-var player:int
+@export var player:int
 var placed_index:int
 var border_marble:bool
 
@@ -36,7 +36,8 @@ var nearest_marbles:Array[Marble] = []
 var camera:Camera
 
 func init(placing_player:int, placed_position:Vector2, index:int):
-	sprite.modulate = Color(0, 0, 0) if placing_player == 0 else Color(1, 1, 1)
+	$"/root/Lobby".print("marble.init(), index " + str(index) + " at " + str(placed_position))			
+	sprite.modulate = Color(0.153, 0.153, 0.267) if placing_player == 0 else Color(0.984, 0.961, 0.937)
 	player = placing_player
 	position = placed_position
 	placed_index = index
@@ -70,7 +71,7 @@ func update_after_turn():
 		shadow.visible = false
 	else:
 		var nearest_opponent_count = nearest_marbles.filter(func(m): return m != null && m.player != player).size()
-		print("Unstable marble " + str(player) + ", " + str(placed_index) + " has a danger of " + str(nearest_opponent_count))
+		print($"/root/Lobby".player_info.name + ": Unstable marble " + str(player) + ", " + str(placed_index) + " has a danger of " + str(nearest_opponent_count) + ", and position of " + str(position))
 		if nearest_marbles.size() == 4 && nearest_opponent_count >= 3:
 			shadow.modulate = Color(0.776, 0.623, 0.647, 1)
 			var particles:GPUParticles2D = atair_particles_prefab.instantiate()
@@ -122,12 +123,12 @@ func _physics_process(delta):
 		spawn_bounce_particles(position, normal, true)
 		if collision.get_collider().is_in_group("marble"):
 			# hit stop
-			hit_lag(0.1, 2)
+			hit_lag(0.3, 2)
 			camera.shake(1000, 2)
 		
 #		collision.get_collider().start_hitstop(32)
 	
-func spawn_bounce_particles(position:Vector2, normal:Vector2, larger:bool):
+func spawn_bounce_particles(pos:Vector2, normal:Vector2, larger:bool):
 	if spawned_particles_this_turn:
 		return
 	spawned_particles_this_turn = true
@@ -139,21 +140,23 @@ func spawn_bounce_particles(position:Vector2, normal:Vector2, larger:bool):
 		particles = bounce_particles_smaller_prefab.instantiate()
 		
 	get_tree().current_scene.add_child(particles)
-	particles.position = position
+	particles.position = pos
 	particles.rotation = normal.angle()
 
 func spawn_stabalize_particles():
 	var particles:GPUParticles2D = stabalize_particles_prefab.instantiate()
 	get_tree().current_scene.add_child(particles)
 	if player == 0:
-		particles.modulate = Color(0, 0, 0)
+		particles.modulate = Color(0.153, 0.153, 0.267)
+	else:
+		particles.modulate = Color(0.984, 0.961, 0.937)
 	particles.position = position
 
-func hit_lag(scale, duration):
-	if Engine.time_scale < scale:
+func hit_lag(t_scale, duration):
+	if Engine.time_scale < t_scale:
 		return
-	Engine.time_scale = scale
-	await get_tree().create_timer(scale * duration).timeout
+	Engine.time_scale = t_scale
+	await get_tree().create_timer(t_scale * duration).timeout
 	Engine.time_scale = 1
 #
 #func start_hitstop(frames:int):

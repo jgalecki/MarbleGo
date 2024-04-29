@@ -1,0 +1,158 @@
+[gd_scene load_steps=3 format=3 uid="uid://bp4wnhp32vdmp"]
+
+[ext_resource type="Texture2D" uid="uid://bnm16pv7b35j1" path="res://sprites/title_background.png" id="1_fx47c"]
+[ext_resource type="Script" path="res://scripts/title_screen.gd" id="1_o76v6"]
+
+[node name="Title Screen" type="Node2D"]
+script = ExtResource("1_o76v6")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -12.0
+offset_top = 2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_fx47c")
+
+[node name="Menu Options" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -270.0
+offset_right = -21.0
+offset_bottom = -25.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Menu Options"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Menu Options/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Local" type="VBoxContainer" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Play One Player Local" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Local"]
+layout_mode = 2
+disabled = true
+text = "One Player"
+
+[node name="Play Two Player Local" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Local"]
+layout_mode = 2
+text = "Two Player"
+
+[node name="Online" type="VBoxContainer" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="Name Label" type="Label" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+layout_mode = 2
+text = "User Name
+"
+
+[node name="Name Textbox" type="TextEdit" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Odakodog"
+
+[node name="IP Label" type="Label" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+layout_mode = 2
+text = "IP Address
+"
+
+[node name="IP Textbox" type="TextEdit" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "localhost"
+placeholder_text = "localhost"
+
+[node name="Host Button" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+layout_mode = 2
+text = "Host"
+
+[node name="Join Button" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+layout_mode = 2
+text = "Join
+"
+
+[node name="Top Level Buttons" type="VBoxContainer" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 10
+
+[node name="Local" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons"]
+layout_mode = 2
+text = "Play Local"
+
+[node name="Online" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons"]
+layout_mode = 2
+text = "Play Online"
+
+[node name="Rules" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons"]
+layout_mode = 2
+text = "Rules"
+
+[node name="Credits" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons"]
+layout_mode = 2
+text = "Credits"
+
+[node name="Exit" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons"]
+layout_mode = 2
+text = "Exit"
+
+[node name="Waiting For Guest" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -258.0
+offset_top = -49.0
+offset_right = 295.0
+offset_bottom = 49.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Waiting For Guest"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Waiting For Guest/MarginContainer"]
+layout_mode = 2
+
+[node name="Waiting Label" type="Label" parent="CanvasLayer/Waiting For Guest/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Waiting for a player to connect..."
+horizontal_alignment = 1
+
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Local/Play One Player Local" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Local/Play Two Player Local" to="." method="_on_play_two_player_local_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/Host Button" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/Join Button" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Local" to="." method="_on_local_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Online" to="." method="_on_online_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Rules" to="." method="_on_rules_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Credits" to="." method="_on_credits_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Exit" to="." method="_on_exit_pressed"]
