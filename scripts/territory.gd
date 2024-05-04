@@ -7,9 +7,9 @@ class Tri:
 	var triangle:Delaunay.Triangle
 	var area:float
 	
-	func _init(owner:int, triangle:Delaunay.Triangle):
-		self.owner = owner
-		self.triangle = triangle
+	func _init(_owner:int, _triangle:Delaunay.Triangle):
+		self.owner = _owner
+		self.triangle = _triangle
 		
 		var a = triangle.edge_ab.length()
 		var b = triangle.edge_bc.length()
@@ -140,6 +140,7 @@ func _on_marble_added(black_marbles:Array[Marble], white_marbles:Array[Marble]):
 #		count_triangle.emit(tri.triangle, tri.owner)
 #		await get_tree().create_timer(0.25).timeout
 	
+	print($"/root/Lobby".own_name() + " is finished counting territory" )
 	finished_scoring.emit()
 
 func opponent_in_triangle(tri:Delaunay.Triangle, marbles:Array[Marble]) -> bool:

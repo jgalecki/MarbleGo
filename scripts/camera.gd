@@ -2,6 +2,7 @@ extends Camera2D
 class_name Camera
 
 @export var camera_offset:Vector2
+var original_position:Vector2
 
 var shake_duration: float
 @onready var rand = RandomNumberGenerator.new()
@@ -11,14 +12,14 @@ var shake_duration_original: float
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	camera_offset = Vector2(0, 0)
+	original_position = position
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	position = position.lerp(position + camera_offset, delta * 8)
+	position = position.lerp(original_position + camera_offset, delta * 8)
 
 	if shake_strength > 0:
-		print("Shaking w/ strength " + str(shake_strength))
 		# Fade out the intensity over time
 		shake_strength = lerpf(0, shake_strength, shake_duration / shake_duration_original)
 		shake_duration -= delta

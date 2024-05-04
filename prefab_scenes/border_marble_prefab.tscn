@@ -1,9 +1,43 @@
-[gd_scene load_steps=3 format=3 uid="uid://bvywj7ouuiva8"]
+[gd_scene load_steps=10 format=3 uid="uid://bvywj7ouuiva8"]
 
 [ext_resource type="Script" path="res://scripts/border_marble.gd" id="1_4h1lh"]
+[ext_resource type="Script" path="res://addons/trail_2d/trail_2d.gd" id="2_fh48x"]
+[ext_resource type="Texture2D" uid="uid://ib8aq0x73vqj" path="res://sprites/piece.png" id="3_sgmby"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_skh4d"]
 load_path = "res://.godot/imported/piece.png-626c86524329fb5e0996f5c5006c4203.ctex"
+
+[sub_resource type="Gradient" id="Gradient_ghq3b"]
+offsets = PackedFloat32Array(0, 0.753846, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.841026, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rckwc"]
+gradient = SubResource("Gradient_ghq3b")
+
+[sub_resource type="Curve" id="Curve_iwen3"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.221239, 1), 0.0, 0.0, 0, 0, Vector2(0.384956, 0.494737), 0.0, 0.0, 0, 0, Vector2(0.5, 0.789474), 0.0, 0.0, 0, 0, Vector2(0.632743, 0.368421), 0.0, 0.0, 0, 0, Vector2(0.734513, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 7
+
+[sub_resource type="CurveTexture" id="CurveTexture_xgwcj"]
+curve = SubResource("Curve_iwen3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jypyt"]
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 12.0
+emission_ring_inner_radius = 10.0
+particle_flag_disable_z = true
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+orbit_velocity_min = 0.5
+orbit_velocity_max = 0.6
+radial_accel_min = -100.0
+radial_accel_max = -40.0
+scale_min = 0.04
+scale_max = 0.05
+scale_curve = SubResource("CurveTexture_xgwcj")
+color_ramp = SubResource("GradientTexture1D_rckwc")
 
 [node name="Border Marble" type="RigidBody2D" node_paths=PackedStringArray("sprite")]
 gravity_scale = 0.0
@@ -18,3 +52,17 @@ sprite = NodePath("MarbleSprite")
 modulate = Color(0.94902, 0.827451, 0.631373, 1)
 scale = Vector2(0.25, 0.25)
 texture = SubResource("CompressedTexture2D_skh4d")
+
+[node name="Trail2D" type="Line2D" parent="."]
+script = ExtResource("2_fh48x")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="Unstable Particles" type="GPUParticles2D" parent="."]
+visible = false
+emitting = false
+amount = 12
+process_material = SubResource("ParticleProcessMaterial_jypyt")
+texture = ExtResource("3_sgmby")
+lifetime = 4.0
+randomness = 0.25

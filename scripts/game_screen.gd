@@ -1,5 +1,8 @@
 extends Node
 
+@onready var player_assignment_screen = $"CanvasLayer/Player Assignment Screen"
+@onready var negotiate_colors = $"CanvasLayer/Negotiate Colors"
+
 var current_player:int = 0 	# 0 is black, 1 is white
 var current_turn:int = 0
 var check_for_end_turn:int = 41
@@ -15,38 +18,25 @@ var is_rolling:bool
 @export var game_board:GameBoard
 @export var game_over_screen:GameOverScreen
 @export var shooting_arrow:Sprite2D
-@export var shooting_fill:Sprite2D
-var shooting_timer:float
-var shooting_strength:float
 
 @export var debug_score_display:ScoreDisplay
 var explode_particle_prefab = preload("res://prefab_scenes/explode_particles.tscn")
 
+var white_bonus:int
+var black_bonus:int
+
+var ai:Ai
+
+var switch_turns_count:int
+
 func _ready():
-	reset_game()
+#	reset_game()
 	update_ui()
 	
 func _process(delta):	
-	
-	if is_shooting:
-		shooting_timer += delta
-		if shooting_timer > 1.5:
-			shooting_timer = 0
-		
-#		if shooting_timer < 0.6:
-#			shooting_strength = shooting_timer / 2.0
-#		elif shooting_timer < 0.8:
-#			shooting_strength = 0.3 + (shooting_timer - 0.6)
-#		elif shooting_timer < 0.95:
-#			shooting_strength = 0.5 + (shooting_timer - 0.8) * 2
-#		else:
-#			shooting_strength = 0.8 + (shooting_timer - 0.95) * 4
-		if shooting_timer <= 0.75:
-			shooting_strength = shooting_timer
-		else:
-			shooting_strength = 1.5 - shooting_timer
-			
-		shooting_fill.scale.x = shooting_strength
+	if player_assignment_screen.visible || negotiate_colors.visible:
+		return
+#	print("Past start hold")
 	
 	handle_input()
 	
@@ -55,54 +45,114 @@ func handle_input():
 	if game_over:
 		return
 	
-	var mouse_world_position = debug_score_display.get_canvas_transform().affine_inverse() \
-									* get_viewport().get_mouse_position()
-			
-	if is_shooting:
-		# update ui for arrow or something?
-		debug_score_display.update_mouse(1, mouse_world_position)
-		
-		var aiming_delta = game_board.shooting_marble.position - mouse_world_position
-		# if no mouse movement, aim towards the origin / center of the board
-		if aiming_delta.length() == 0:
-			aiming_delta = game_board.shooting_marble.position * -1
-					
-		shooting_arrow.position = game_board.shooting_marble.position \
-								- aiming_delta.normalized() * 45
-		shooting_arrow.rotation = aiming_delta.angle()
-		
-		if Input.is_action_just_pressed("Confirm"):
-			shooting_arrow.visible = false
-			
-			# nothing for power / distance yet. 
-			game_board.shoot(aiming_delta.normalized(), 1000 * shooting_strength)
-			is_shooting = false
-			is_rolling = true		
-			var player = "BLACK" if current_player == 0 else "WHITE"
-			print(player + " is now rolling.")
-		
-	elif is_placing:
-		if mouse_world_position.length() > 300:
-			game_board.shooting_marble.visible = false
-			return
-		else:
-			game_board.shooting_marble.visible = true
-			
-		
-		var perimeter_position = mouse_world_position.normalized() * 256
-		debug_score_display.update_mouse(0, perimeter_position)
-		game_board.move_shot_around_perimeter(perimeter_position)
+	var lobby = $"/root/Lobby"
+	var has_control = not lobby.players[1].online || lobby.player_info.color == current_player
+	var has_remote_control = lobby.players[1].online \
+							 && lobby.player_info.color != lobby.players[1].color \
+							 && lobby.player_info.color == current_player
 	
-		if Input.is_action_just_pressed("Confirm"):
-			is_placing = false
-			is_shooting = true
-			var player = "BLACK" if current_player == 0 else "WHITE"
-			print(player + " is now shooting.")
+	var mouse_world_position = get_viewport().get_mouse_position() - get_viewport().get_visible_rect().get_center()
+#
+#	print(str(mouse_world_position) + ", " + str(mouse_world_position_2))
+#
+	if is_shooting:
+		if not has_control:
+			return
+		if has_remote_control:
+			remote_control_shooting.rpc(mouse_world_position, Input.is_action_just_released("Confirm"))
 			
-			shooting_arrow.visible = true
-			shooting_arrow.position = game_board.shooting_marble.position
-			shooting_timer = 0
-			game_board.shooting_marble.camera = camera
+			var aiming_delta = (game_board.shooting_marble.position * camera.zoom.x) \
+								 - mouse_world_position
+			
+			# if no mouse movement, aim towards the origin / center of the board
+			if aiming_delta.length() == 0:
+				aiming_delta = game_board.shooting_marble.position * -1
+						
+			shooting_arrow.position = game_board.shooting_marble.position \
+									- aiming_delta.normalized() * 45
+			shooting_arrow.rotation = aiming_delta.angle()
+			var shooting_strength = minf(1, aiming_delta.length() / 100.0)
+			shooting_arrow.scale.y = shooting_strength
+			if shooting_strength >= 0.98:
+				shooting_arrow.modulate = Color(0.776, 0.623, 0.647)
+				shooting_arrow.scale.x = 2
+			else:
+				shooting_arrow.modulate = Color(1, 1, 1)
+				shooting_arrow.scale.x = 1
+		else:
+			
+			if lobby.players[1].single_player && lobby.players[1].color != current_player:
+				# AI shooting
+				var shooting_strength = ai.shoot_marble_power()
+				if shooting_strength >= 0.98:
+					shooting_strength *= 2
+				var aiming_delta = Vector2(1, 0).rotated(ai.shoot_marble_angle())
+				game_board.shoot(aiming_delta.normalized(), 500 * shooting_strength)
+				
+				switch_to_rolling_phase.rpc()
+				
+			# update ui for arrow or something?
+			debug_score_display.update_mouse(1, mouse_world_position)
+			
+			var aiming_delta = (game_board.shooting_marble.position * camera.zoom.x) \
+								 - mouse_world_position
+			# if no mouse movement, aim towards the origin / center of the board
+			if aiming_delta.length() == 0:
+				aiming_delta = game_board.shooting_marble.position * -1
+						
+			shooting_arrow.position = game_board.shooting_marble.position \
+									+ aiming_delta.normalized() * 45
+			shooting_arrow.rotation = aiming_delta.angle()
+			var shooting_strength = min(1, aiming_delta.length() / 100.0)
+			shooting_arrow.scale.y = shooting_strength
+			if shooting_strength >= 0.98:
+				shooting_arrow.modulate = Color(0.776, 0.623, 0.647)
+				shooting_arrow.scale.x = 2
+			else:
+				shooting_arrow.modulate = Color(1, 1, 1)
+				shooting_arrow.scale.x = 1
+			
+			if Input.is_action_just_released("Confirm"):
+				if shooting_strength >= 0.98:
+					shooting_strength *= 2
+				game_board.shoot(aiming_delta.normalized(), 500 * shooting_strength)
+				switch_to_rolling_phase.rpc()
+			
+	elif is_placing:
+		if not has_control:
+			return
+		if has_remote_control:
+			remote_control_placement.rpc(mouse_world_position, Input.is_action_just_pressed("Confirm"))
+			
+			var near_board = 350 * camera.zoom.x
+			if game_board.position.distance_to(mouse_world_position) <= near_board \
+				&& Input.is_action_just_pressed("Confirm"):
+				shooting_arrow.position = game_board.shooting_marble.position
+				shooting_arrow.visible = true
+				
+		else:
+			if lobby.players[1].single_player && lobby.players[1].color != current_player:
+				# AI placement
+				game_board.shooting_marble.position = ai.place_marble(game_board.black_marbles, game_board.white_marbles, game_board.border_marbles)
+				switch_to_shooting_phase.rpc()
+			
+			var near_board = 350 * camera.zoom.x
+			if game_board.position.distance_to(mouse_world_position) > near_board:
+				game_board.shooting_marble.visible = false
+				debug_score_display.update_mouse(0, camera.position)
+				return
+			else:
+				game_board.shooting_marble.visible = true
+
+
+			var perimeter_position = mouse_world_position.normalized() * 256
+			debug_score_display.update_mouse(0, perimeter_position)
+			game_board.move_shot_around_perimeter(perimeter_position)
+
+			if Input.is_action_just_pressed("Confirm"):
+				switch_to_shooting_phase.rpc()
+				shooting_arrow.position = game_board.shooting_marble.position
+				shooting_arrow.visible = true
 			
 	elif is_rolling:
 		debug_score_display.update_mouse(2, mouse_world_position)
@@ -120,18 +170,129 @@ func handle_input():
 			game_board.shooting_marble.shadow.visible = true
 			game_board.shooting_marble.trail_2d.visible = false
 			var player = "BLACK" if current_player == 0 else "WHITE"
-			print(player + " is done with their turn.")
+			print($"/root/Lobby".own_name() + ": "+ player + " is done with their turn.")
+			
+			
 			update_borders()
 			capture_marbles()
-			player_scores = [0, 0]
+			player_scores = [black_bonus, white_bonus]
 			game_board.start_territory_count()
 	else:
 		debug_score_display.update_mouse(3, mouse_world_position)
+		
+@rpc("any_peer", "call_remote", "reliable")
+func remote_control_placement(mouse_pos:Vector2, clicked:bool):
+	var near_board = 350 * camera.zoom.x
+	if game_board.position.distance_to(mouse_pos) > near_board:
+		game_board.shooting_marble.visible = false
+		debug_score_display.update_mouse(0, camera.position)
+		return
+	else:
+		game_board.shooting_marble.visible = true
+		
+	
+	var perimeter_position = mouse_pos.normalized() * 256
+	debug_score_display.update_mouse(0, perimeter_position)
+	game_board.move_shot_around_perimeter(perimeter_position)
+
+	if clicked:
+		switch_to_shooting_phase.rpc()
+		shooting_arrow.position = game_board.shooting_marble.position
+		shooting_arrow.visible = true
+	
+@rpc("any_peer", "call_remote", "reliable")
+func remote_control_shooting(mouse_pos:Vector2, released:bool):
+	# update ui for arrow or something?
+	debug_score_display.update_mouse(1, mouse_pos)
+	
+	var aiming_delta = (game_board.shooting_marble.position * camera.zoom.x) - mouse_pos
+	# if no mouse movement, aim towards the origin / center of the board
+	if aiming_delta.length() == 0:
+		aiming_delta = game_board.shooting_marble.position * -1
+		
+	shooting_arrow.position = game_board.shooting_marble.position \
+							- aiming_delta.normalized() * 45
+	shooting_arrow.rotation = aiming_delta.angle()
+	var shooting_strength = minf(1, aiming_delta.length() / 100.0)
+	shooting_arrow.scale.y = shooting_strength
+	if shooting_strength >= 0.98:
+		shooting_arrow.modulate = Color(0.776, 0.623, 0.647)
+		shooting_arrow.scale.x = 2
+	else:
+		shooting_arrow.modulate = Color(1, 1, 1)
+		shooting_arrow.scale.x = 1
+	
+	if released:
+		shooting_arrow.scale.y = shooting_strength
+		if shooting_strength >= 0.98:
+			shooting_strength *= 2
+		game_board.shoot(aiming_delta.normalized(), 500 * shooting_strength)
+		switch_to_rolling_phase.rpc()
+
+@rpc("any_peer", "call_local", "reliable")
+func switch_to_shooting_phase():
+	is_placing = false
+	is_shooting = true
+	var player = "BLACK" if current_player == 0 else "WHITE"
+	$"/root/Lobby".print(player + " is now shooting.")
+	
+#	shooting_arrow.position = game_board.shooting_marble.position
+	game_board.shooting_marble.camera = camera
+	
+@rpc("any_peer", "call_local", "reliable")
+func switch_to_rolling_phase():
+	shooting_arrow.visible = false
+	
+	# nothing for power / distance yet. 
+	is_shooting = false
+	is_rolling = true		
+	var player = "BLACK" if current_player == 0 else "WHITE"
+	$"/root/Lobby".print(player + " is now rolling.")
+	
 
 func reset_game():
 	current_player = 0
 	current_turn = 0
-	player_scores = [0.0, 0.0]
+	switch_turns_count = 0
+	
+	var lobby:Lobby = get_node("/root/Lobby")
+	if lobby.players[1].color_bid > 0:
+		if lobby.players[1].color == 0:
+			white_bonus = lobby.players[1].color_bid
+			black_bonus = 0
+		else:
+			black_bonus = lobby.players[1].color_bid
+			white_bonus = 0
+	elif lobby.players[lobby.guest_player_id].color_bid > 0:
+		if lobby.players[lobby.guest_player_id].color == 0:
+			white_bonus = lobby.players[lobby.guest_player_id].color_bid
+			black_bonus = 0
+		else:
+			black_bonus = lobby.players[lobby.guest_player_id].color_bid
+			white_bonus = 0
+	else:
+			white_bonus = 0
+			black_bonus = 0
+
+			
+	if lobby.players[1].single_player:
+		ai = AI_Random_Randy.new()
+		if lobby.players[1].color == 0:
+			white_bonus = ai.ai_handicap() * 100
+		else:
+			black_bonus = ai.ai_handicap() * 100
+	else:
+		ai = null
+		
+		
+#	$"/root/Lobby".print("Bids2: host " + str(lobby.players[1].color_bid) + ", guest " + str(lobby.players[lobby.guest_player_id].color_bid))
+#	if lobby.players[1].color_bid >= lobby.players[lobby.guest_player_id].color_bid:
+#		white_bonus = lobby.players[1].color_bid * 100
+#	else:
+#		white_bonus = lobby.players[lobby.guest_player_id].color_bid * 100
+#
+	lobby.print("black_bonus is " + str(black_bonus) + ", white_bonus is " + str(white_bonus))
+	player_scores = [black_bonus, white_bonus]
 	
 	game_over = false
 	if game_over_screen.visible:
@@ -141,7 +302,9 @@ func reset_game():
 	game_board.reset_board()
 	#gameOverScreen.hide()
 	is_placing = true
-	game_board.next_turn(current_player)
+	
+	if lobby.multiplayer.is_server():
+		game_board.init_next_marble(current_player)
 	for border_marble in game_board.border_marbles:
 		border_marble.camera = camera
 	
@@ -151,14 +314,48 @@ func update_ui():
 	debug_score_display.update_scores(player_scores, current_turn, current_player)
 	pass
 
+
+@rpc("any_peer", "call_local", "reliable")
 func switch_turns():
+	if $"/root/Lobby".players[1].online:
+		switch_turns_online()
+		
+	else:
+		switch_turns_local()
+
+@rpc("authority", "call_local", "reliable")
+func switch_turns_local():
 	current_player = 1 - current_player # Switches between 0 and 1
 	current_turn += 1
 	if current_player == 0:
-		print("BLACK's turn " + str(current_turn))
+		$"/root/Lobby".print("BLACK's turn " + str(current_turn))
 	else:
-		print("WHITE's turn " + str(current_turn))
+		$"/root/Lobby".print("WHITE's turn " + str(current_turn))
 	update_ui()
+
+	next_turn()
+	
+
+func switch_turns_online():
+	if $"/root/Lobby".multiplayer.is_server():
+		print("Host got ready-for-turn-call")
+		switch_turns_count += 1
+		if switch_turns_count >= 2:
+			print("Host is switching turns")
+			switch_turns_count = 0
+			switch_turns_local.rpc()
+	
+@rpc("authority", "call_local", "reliable")
+func next_turn():
+	if $"/root/Lobby".multiplayer.is_server():
+		game_board.init_next_marble(current_player)
+		
+	for black_marble in game_board.black_marbles:
+		black_marble.spawned_particles_this_turn = false
+	for white_marble in game_board.white_marbles:
+		white_marble.spawned_particles_this_turn = false
+	
+	is_placing = true
 
 func end_game():
 	game_over = true
@@ -176,7 +373,7 @@ func _on_territory_count_triangle(tri:Territory.Tri):
 
 
 func _on_territory_finished_scoring():
-	print("Finished counting territory")
+	$"/root/Lobby".print("Finished counting territory")
 
 	if current_turn >= check_for_end_turn:
 		end_game()
@@ -187,15 +384,9 @@ func _on_territory_finished_scoring():
 		
 	if not game_over:
 		game_board.update_marbles_after_turn()
-		is_placing = true
 		update_ui()
-		switch_turns()
-		game_board.next_turn(current_player)
-			
-		for black_marble in game_board.black_marbles:
-			black_marble.spawned_particles_this_turn = false
-		for white_marble in game_board.white_marbles:
-			white_marble.spawned_particles_this_turn = false
+		switch_turns.rpc()
+		
 
 func _on_restart_button_pressed():
 	reset_game()
@@ -212,8 +403,7 @@ func _on_pass_button_pressed():
 		shooting_arrow.visible = false
 		
 		update_ui()
-		switch_turns()
-		game_board.next_turn(current_player)
+		switch_turns.rpc()
 	else: 
 		pass	# Allow cancelling out of shooting?		
 		
@@ -233,8 +423,6 @@ func update_borders():
 		
 func capture_marbles():
 		
-	if game_board.last_turn_marble == null:
-		game_board.last_turn_marble == game_board.shooting_marble
 		
 	calculate_marble_distances()	
 	
@@ -246,7 +434,6 @@ func capture_marbles():
 		capture_black_marbles()
 		capture_white_marbles()
 		
-	game_board.last_turn_marble == game_board.shooting_marble
 		
 func calculate_marble_distances():
 	var all_marbles:Array[Marble] = []
@@ -279,8 +466,10 @@ func capture_white_marbles():
 			var particles:GPUParticles2D = explode_particle_prefab.instantiate()
 			get_tree().current_scene.add_child(particles)
 			particles.position = white.position
-			hit_lag(0.2, 1)
+			particles.modulate = Color(0.984, 0.961, 0.937)
+			hit_lag(0.5, 1)
 			camera.shake(1000, 1)
+	dead_marbles.reverse()
 	for i in dead_marbles:
 		var dead = game_board.white_marbles[i]
 		game_board.white_marbles.remove_at(i)
@@ -298,12 +487,12 @@ func capture_black_marbles():
 			dead_marbles.append(i)
 			var particles:GPUParticles2D = explode_particle_prefab.instantiate()
 			get_tree().current_scene.add_child(particles)
-			particles.modulate = Color(0, 0, 0)
+			particles.modulate = Color(0.153, 0.153, 0.267)
 			particles.position = black.position
-			hit_lag(0.2, 1)
+			hit_lag(0.5, 1)
 			camera.shake(1000, 1)
+	dead_marbles.reverse()
 	for i in dead_marbles:
-		print("REMOVING black marble index " + str(i))
 		var dead = game_board.black_marbles[i]
 		game_board.black_marbles.remove_at(i)
 		for child in dead.get_children():
@@ -317,3 +506,19 @@ func hit_lag(scale, duration):
 	Engine.time_scale = scale
 	await get_tree().create_timer(scale * duration).timeout
 	Engine.time_scale = 1
+
+
+func _on_player_assignment_button_pressed():
+	pass # Replace with function body.
+
+# Called when all players have loaded the game scene
+@rpc("authority", "call_local", "reliable")
+func start_game():
+	print("start_game() called! Let's go!")
+	reset_game()
+	
+@rpc("any_peer", "call_local", "reliable")
+func show_player_colors():
+	negotiate_colors.visible = false
+	player_assignment_screen.init()
+	player_assignment_screen.visible = true
