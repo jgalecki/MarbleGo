@@ -20,4 +20,3 @@ mono_crash.*.json
 /.godot/editor
 *.tmp
 .hgignore
-/.godot
