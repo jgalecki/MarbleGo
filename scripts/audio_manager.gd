@@ -61,11 +61,10 @@ func _on_game_board_marble_added(_black_marbles, _white_marbles):
 	playClick()
 
 
-func _on_body_entered(_body, marble : Marble):
+func _on_marble_collision(marble : Marble):
 	# Play a plink noise whenever the body collides.
 	playPlink(min(max(marble.linear_velocity.length() / 300.0, 0.2), 2.0))
 
 func _on_game_board_marble_shot(marble : Marble, velocity : float):
 	playShot(min(max(velocity / 750.0, 0.2), 1.0))
-	var body_entered_lambda = func(x) : return _on_body_entered(x, marble)
-	marble.body_entered.connect(body_entered_lambda, 0)
+	marble.on_collision.connect(_on_marble_collision, 0)
