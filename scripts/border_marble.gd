@@ -3,6 +3,8 @@ class_name BorderMarble
 
 var flag_to_claim:bool
 
+signal on_capture(marble : Marble)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	reset()
@@ -27,6 +29,7 @@ func update_after_turn():
 		player = 0
 		sprite.modulate = Color(0.153, 0.153, 0.267)
 		flag_to_claim = true
+		on_capture.emit(self)
 	elif white_count == 5:
 		stable = true
 		spawn_stabalize_particles()
@@ -34,3 +37,4 @@ func update_after_turn():
 		player = 1
 		sprite.modulate = Color(0.984, 0.961, 0.937)
 		flag_to_claim = true
+		on_capture.emit(self)

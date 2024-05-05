@@ -16,10 +16,15 @@ var shooting_marble:Marble
 
 signal marble_added(black_marbles, white_marbles)
 signal marble_shot(marble:Marble)
-
+signal marble_captured(marble:Marble)
 
 func _ready():
 	reset_board()
+	for border in border_marbles:
+		border.on_capture.connect(_border_marble_captured)
+
+func _border_marble_captured(marble : Marble):
+	marble_captured.emit(marble)
 
 func reset_board():
 	$"/root/Lobby".print("reset_board() called")

@@ -17,13 +17,23 @@
 script = ExtResource("1_kn22w")
 whiteSounds = Array[AudioStream]([ExtResource("2_hx6qu"), ExtResource("3_7mgfn"), ExtResource("4_7fokv"), ExtResource("5_mqw5s"), ExtResource("6_t8ocx")])
 blackSounds = Array[AudioStream]([ExtResource("7_rh2x8"), ExtResource("8_j30s1"), ExtResource("9_exynr"), ExtResource("10_gv27n"), ExtResource("11_mh30y")])
-audioStreamPlayers = [NodePath("AudioStreamPlayer2D"), NodePath("AudioStreamPlayer2D2"), NodePath("AudioStreamPlayer2D3")]
+audioStreamPlayers = [NodePath("AudioStreamPlayer2D"), NodePath("AudioStreamPlayer2D2"), NodePath("AudioStreamPlayer2D3"), NodePath("AudioStreamPlayer2D4"), NodePath("AudioStreamPlayer2D5"), NodePath("AudioStreamPlayer2D6"), NodePath("AudioStreamPlayer2D7"), NodePath("AudioStreamPlayer2D8")]
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 
 [node name="AudioStreamPlayer2D2" type="AudioStreamPlayer2D" parent="."]
 
 [node name="AudioStreamPlayer2D3" type="AudioStreamPlayer2D" parent="."]
+
+[node name="AudioStreamPlayer2D4" type="AudioStreamPlayer2D" parent="."]
+
+[node name="AudioStreamPlayer2D5" type="AudioStreamPlayer2D" parent="."]
+
+[node name="AudioStreamPlayer2D6" type="AudioStreamPlayer2D" parent="."]
+
+[node name="AudioStreamPlayer2D7" type="AudioStreamPlayer2D" parent="."]
+
+[node name="AudioStreamPlayer2D8" type="AudioStreamPlayer2D" parent="."]
 
 [node name="Music" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("12_u7e7a")

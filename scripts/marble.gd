@@ -38,7 +38,7 @@ var nearest_marbles:Array[Marble] = []
 # For screen shake
 var camera:Camera
 
-signal on_collision(marble : Marble)
+signal on_collision(marble : Marble, is_big : bool)
 
 func init(placing_player:int, placed_position:Vector2, index:int):
 	$"/root/Lobby".print("marble.init(), index " + str(index) + " at " + str(placed_position))			
@@ -129,17 +129,21 @@ func _physics_process(delta):
 		
 	var normal = collision.get_normal()
 	sprite.rotation = normal.angle()
-	on_collision.emit(self)
 	if get_linear_velocity().length() < min_speed_for_minor_collision:
 		spawn_bounce_particles(position, normal, false)
+		on_collision.emit(self, false)
 	elif get_linear_velocity().length() < min_speed_for_major_collision:
 		spawn_bounce_particles(position, normal, false)		
 		if collision.get_collider().is_in_group("marble"):
 			hit_lag(0.8, 1)
 			camera.shake(150, 1)
+			on_collision.emit(self, true)
+		else:
+			on_collision.emit(self, false)
 	else:
 		animation_player.play("marble_bounce")
 		spawn_bounce_particles(position, normal, true)
+		on_collision.emit(self, true)
 		if collision.get_collider().is_in_group("marble"):
 			# hit stop
 			hit_lag(0.6, 2)

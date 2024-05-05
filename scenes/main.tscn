@@ -485,6 +485,7 @@ text = "Bid"
 
 [connection signal="marble_added" from="GameBoard" to="GameBoard/AudioManager" method="_on_game_board_marble_added"]
 [connection signal="marble_added" from="GameBoard" to="Territory" method="_on_marble_added"]
+[connection signal="marble_captured" from="GameBoard" to="GameBoard/AudioManager" method="_on_game_board_marble_captured"]
 [connection signal="marble_shot" from="GameBoard" to="GameBoard/AudioManager" method="_on_game_board_marble_shot"]
 [connection signal="count_triangle" from="Territory" to="." method="_on_territory_count_triangle"]
 [connection signal="count_triangle" from="Territory" to="GameBoard" method="_on_territory_count_triangle"]
