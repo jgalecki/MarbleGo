@@ -27,7 +27,7 @@ func update_after_turn():
 		spawn_stabalize_particles()
 		camera.shake(500, 1)
 		player = 0
-		sprite.modulate = Color(0.153, 0.153, 0.267)
+		sprite.modulate = Color(0.06, 0.06, 0.12)
 		flag_to_claim = true
 		on_capture.emit(self)
 	elif white_count == 5:

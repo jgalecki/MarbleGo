@@ -51,7 +51,7 @@ func playBlackSound(idx : int) -> void:
 	playArraySound(blackSounds, idx % blackSounds.size())
 	
 func playClick() -> void:
-	playSound(ClickSound, 0.2)
+	playSound(ClickSound, 0.2, 1.5)
 
 func playShot(volume : float) -> void:
 	playSound(ShotSound, 0.2, volume)
@@ -80,6 +80,7 @@ func _on_territory_count_triangle(triangle):
 	nextIdx = nextIdx + 1
 
 func _on_game_board_marble_added(_black_marbles, _white_marbles):
+	print("audo: marble added")
 	playArp(1.0)
 
 func _on_marble_collision(marble : Marble, isBig : bool):

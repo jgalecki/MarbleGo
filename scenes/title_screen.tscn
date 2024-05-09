@@ -1,9 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://bp4wnhp32vdmp"]
+[gd_scene load_steps=10 format=3 uid="uid://bp4wnhp32vdmp"]
 
 [ext_resource type="Texture2D" uid="uid://bnm16pv7b35j1" path="res://sprites/title_background.png" id="1_fx47c"]
 [ext_resource type="Script" path="res://scripts/title_screen.gd" id="1_o76v6"]
 [ext_resource type="Texture2D" uid="uid://dfue5s75ko0x7" path="res://sprites/tutorial 1.png" id="3_mv6gt"]
 [ext_resource type="Texture2D" uid="uid://c8qujyk17hqwg" path="res://sprites/tutorial 2.png" id="4_3wkyq"]
+[ext_resource type="Theme" uid="uid://c01v12h8pift" path="res://themes/basic_theme.tres" id="5_8nmj2"]
+[ext_resource type="Texture2D" uid="uid://c38y7htp6inuj" path="res://sprites/Moonroof 98x64.png" id="6_m2xxr"]
+[ext_resource type="Texture2D" uid="uid://crhtwl7oaf7t1" path="res://sprites/Discord icon 98x64.png" id="7_4j8ew"]
+[ext_resource type="Texture2D" uid="uid://geuprxpjdi4o" path="res://sprites/github 98x64.png" id="8_73q8i"]
+[ext_resource type="PackedScene" uid="uid://dq76kqw6pgnfa" path="res://prefab_scenes/audio_manager.tscn" id="9_ur4q5"]
 
 [node name="Title Screen" type="Node2D"]
 script = ExtResource("1_o76v6")
@@ -32,6 +37,7 @@ offset_right = -21.0
 offset_bottom = -25.0
 grow_horizontal = 0
 grow_vertical = 0
+theme = ExtResource("5_8nmj2")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Menu Options"]
 layout_mode = 2
@@ -43,6 +49,27 @@ theme_override_constants/margin_bottom = 25
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Menu Options/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
+
+[node name="AI" type="VBoxContainer" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[node name="Warning Label" type="Label" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/AI"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Choose an AI opponent.
+(If you'd like to build a new one, check out the 
+Github link. I welcome contributions!)"
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/AI"]
+layout_mode = 2
+columns = 2
+
+[node name="Random Randy AI Button" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/AI/GridContainer"]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 2
+text = "Random Randy"
 
 [node name="Local" type="VBoxContainer" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer"]
 visible = false
@@ -59,37 +86,78 @@ layout_mode = 2
 text = "Two Player"
 
 [node name="Online" type="VBoxContainer" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(400, 300)
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="Name Label" type="Label" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+[node name="Warning Label" type="Label" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
 layout_mode = 2
-text = "User Name
+theme_override_font_sizes/font_size = 22
+text = "WARNING: Online play may require knowledge of arcance 
+magicks such as \"ipconfig\", \"port forwarding\", and \"F12\""
+
+[node name="Control" type="Control" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 10.0
+columns = 2
+
+[node name="Name Label" type="Label" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "User Name (Required)
 "
 
-[node name="Name Textbox" type="TextEdit" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
-custom_minimum_size = Vector2(0, 40)
+[node name="Name Textbox" type="TextEdit" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
+custom_minimum_size = Vector2(300, 40)
 layout_mode = 2
-text = "Odakodog"
+theme_override_font_sizes/font_size = 22
 
-[node name="IP Label" type="Label" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+[node name="IP Label" type="Label" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
 text = "IP Address
 "
 
-[node name="IP Textbox" type="TextEdit" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+[node name="IP Textbox" type="TextEdit" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
 text = "localhost"
+
+[node name="Port Label" type="Label" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "Port"
+
+[node name="Port Textbox" type="TextEdit" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "7000"
 placeholder_text = "localhost"
 
-[node name="Host Button" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+[node name="Control2" type="Control" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control3" type="Control" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Host Button" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+disabled = true
 text = "Host"
 
-[node name="Join Button" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online"]
+[node name="Join Button" type="Button" parent="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer"]
 layout_mode = 2
+disabled = true
 text = "Join
 "
 
@@ -132,6 +200,7 @@ offset_right = 295.0
 offset_bottom = 49.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("5_8nmj2")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Waiting For Guest"]
 layout_mode = 2
@@ -150,17 +219,19 @@ text = "Waiting for a player to connect..."
 horizontal_alignment = 1
 
 [node name="Rules Screen" type="PanelContainer" parent="CanvasLayer"]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -425.0
+offset_top = -415.0
+offset_right = 425.0
+offset_bottom = 415.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("5_8nmj2")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Rules Screen"]
 layout_mode = 2
@@ -187,46 +258,57 @@ size_flags_horizontal = 3
 
 [node name="Rule 1 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "1) Black and White take turns shooting marbles"
+theme_override_font_sizes/font_size = 22
+text = "1) Black and White take turns shooting marbles."
 
 [node name="Rule 2 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "2) At the end of the game, you get points for territory 
-     between your marbles"
+theme_override_font_sizes/font_size = 22
+text = "2) At the end of the game, you get points for 
+    territory between your marbles."
 
 [node name="Rule 3 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
 text = "3) Territory is claimed based on triangles drawn 
-     between all marbles"
+     between all marbles."
 
 [node name="Rule 4 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "4) If you own all three marbles on a triangle, you get 
-     points equal to the area of the triangle"
+theme_override_font_sizes/font_size = 22
+text = "4) If you own all three marbles on a triangle, 
+    you get points equal to the area of the triangle."
 
 [node name="Rule 5 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "5) Marbles are frozen 8 turns after they are placed. A 
-     frozen marble cannot be moved or captured."
+theme_override_font_sizes/font_size = 22
+text = "5) Marbles are frozen eight turns after they 
+    are placed. A frozen marble cannot be moved 
+    or captured."
 
 [node name="Rule 6 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "6) An unfrozen marble can be captured if the 4 closest 
-     marbles belong to the opponent."
+theme_override_font_sizes/font_size = 22
+text = "6) An unfrozen marble can be captured if the 
+    FOUR closest marbles belong to the opponent."
 
 [node name="Rule 7 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "7) There are 12 neutral border marbles around the 
-     board"
+theme_override_font_sizes/font_size = 22
+text = "7) There are twelve neutral border marbles 
+    around the board."
 
 [node name="Rule 8 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "8) These border marbles will change to Black or White 
-     if the 5 closest marbles are all Black or White"
+theme_override_font_sizes/font_size = 22
+text = "8) These border marbles will change to Black 
+    or White if the FIVE closest marbles are all 
+    Black or White."
 
 [node name="Rule 9 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-text = "9) The game lasts for 40 turns"
+theme_override_font_sizes/font_size = 22
+text = "9) The game lasts for 40 turns."
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -234,6 +316,7 @@ size_flags_horizontal = 3
 
 [node name="Rule 3 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "Rule 3"
 horizontal_alignment = 1
 
@@ -244,6 +327,7 @@ stretch_mode = 3
 
 [node name="Rule 5 Label" type="Label" parent="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "Rule 5"
 horizontal_alignment = 1
 
@@ -261,13 +345,155 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "Return"
 
+[node name="Credits Screen" type="PanelContainer" parent="CanvasLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -275.0
+offset_top = -200.0
+offset_right = 275.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("5_8nmj2")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Credits Screen"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Credits Screen/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 72
+text = "Credits"
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+columns = 2
+
+[node name="Credits label 1" type="Label" parent="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
+text = "Programming,
+Design, Art"
+horizontal_alignment = 1
+
+[node name="Credits label 2" type="Label" parent="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
+text = "Sound, Music"
+horizontal_alignment = 1
+
+[node name="Credits label 3" type="Label" parent="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Joshua Galecki"
+horizontal_alignment = 1
+
+[node name="Credits label 4" type="Label" parent="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Matt Klingensmith"
+horizontal_alignment = 1
+
+[node name="Control2" type="Control" parent="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Return Button" type="Button" parent="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Return"
+
+[node name="Link Buttons" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 22.0
+offset_top = -79.0
+offset_right = 150.0
+offset_bottom = -24.0
+grow_vertical = 0
+theme = ExtResource("5_8nmj2")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Link Buttons"]
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Link Buttons/MarginContainer"]
+layout_mode = 2
+
+[node name="Version Label" type="Label" parent="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Version 1.0"
+horizontal_alignment = 1
+
+[node name="Moonroof Button" type="Button" parent="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("6_m2xxr")
+icon_alignment = 1
+
+[node name="Discord Button" type="Button" parent="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("7_4j8ew")
+icon_alignment = 1
+
+[node name="Github Button" type="Button" parent="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer"]
+layout_mode = 2
+icon = ExtResource("8_73q8i")
+icon_alignment = 1
+
+[node name="AudioManager" parent="." instance=ExtResource("9_ur4q5")]
+
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/AI/GridContainer/Random Randy AI Button" to="." method="_on_random_randy_ai_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/AI/GridContainer/Random Randy AI Button" to="AudioManager" method="playClick"]
 [connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Local/Play One Player Local" to="." method="_on_play_one_player_local_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Local/Play One Player Local" to="AudioManager" method="playClick"]
 [connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Local/Play Two Player Local" to="." method="_on_play_two_player_local_pressed"]
-[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/Host Button" to="." method="_on_host_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/Join Button" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Local/Play Two Player Local" to="AudioManager" method="playClick"]
+[connection signal="text_changed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer/Name Textbox" to="." method="_on_online_name_changed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer/Host Button" to="." method="_on_host_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer/Host Button" to="AudioManager" method="playClick"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer/Join Button" to="." method="_on_join_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Online/GridContainer/Join Button" to="AudioManager" method="playClick"]
 [connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Local" to="." method="_on_local_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Local" to="AudioManager" method="playClick"]
 [connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Online" to="." method="_on_online_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Online" to="AudioManager" method="playClick"]
 [connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Rules" to="." method="_on_rules_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Rules" to="AudioManager" method="playClick"]
 [connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Credits" to="." method="_on_credits_pressed"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Credits" to="AudioManager" method="playClick"]
+[connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Exit" to="." method="playClick"]
 [connection signal="pressed" from="CanvasLayer/Menu Options/MarginContainer/HBoxContainer/Top Level Buttons/Exit" to="." method="_on_exit_pressed"]
 [connection signal="pressed" from="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/Return Button" to="." method="_on_rules_return_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Rules Screen/MarginContainer/VBoxContainer/Return Button" to="AudioManager" method="playClick"]
+[connection signal="pressed" from="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer/Return Button" to="." method="playClick"]
+[connection signal="pressed" from="CanvasLayer/Credits Screen/MarginContainer/VBoxContainer/Return Button" to="." method="_on_rules_return_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer/Moonroof Button" to="." method="_on_moonroof_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer/Moonroof Button" to="AudioManager" method="playClick"]
+[connection signal="pressed" from="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer/Discord Button" to="." method="_on_discord_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer/Discord Button" to="AudioManager" method="playClick"]
+[connection signal="pressed" from="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer/Github Button" to="." method="_on_github_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Link Buttons/MarginContainer/VBoxContainer/Github Button" to="AudioManager" method="playClick"]

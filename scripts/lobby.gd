@@ -8,7 +8,10 @@ extends Node
 signal player_connected(peer_id, player_info)
 signal player_disconnected(peer_id)
 signal server_disconnected
+signal ready_to_pick
 signal ready_to_bid
+signal ready_to_play
+signal update_color_choices()
 
 const PORT = 7000
 const DEFAULT_SERVER_IP = "127.0.0.1" # IPv4 localhost
@@ -38,27 +41,27 @@ func _ready():
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
 
-func join_game(address = ""):
+func join_game(address = "", port:int = PORT):
 	print("join_game() called")
 	if address.is_empty():
 		address = DEFAULT_SERVER_IP
 	var peer = ENetMultiplayerPeer.new()
-	var error = peer.create_client(address, PORT)
+	var error = peer.create_client(address, port)
 	if error:
 		return error
 	multiplayer.multiplayer_peer = peer
 	guest_player_id = multiplayer.get_unique_id()
-	print("join_game() successful with id " + str(guest_player_id))
+	print("join_game() successful with id " + str(guest_player_id) + " at address " + str(address) + ":" + str(PORT))
 
 
-func create_game():
+func create_game(port:int):
 	print("create_game() called")
 	var peer = ENetMultiplayerPeer.new()
-	var error = peer.create_server(PORT, MAX_CONNECTIONS)
+	var error = peer.create_server(port, MAX_CONNECTIONS)
 	if error:
 		return error
 	multiplayer.multiplayer_peer = peer
-	print("create_game() successful")
+	print("create_game() successful on port " + str(port))
 
 	players[1] = player_info
 	player_connected.emit(1, player_info)
@@ -90,13 +93,25 @@ func player_loaded():
 func player_chose_color(id, color):
 	print("player_chose_color() called")
 	players[id].color_choice = color
+	update_color_choices.emit()
+	
 	if multiplayer.is_server():
 		players_color_chosen += 1
 		if players_color_chosen == players.size():
 			print("All players have chosen colors")
 			players_color_chosen = 0
+			if players[1].color_choice == players[guest_player_id].color_choice:
+				start_player_bids.rpc()
+			else:
+#				ready_to_play.emit()
+				$/root/Main.show_player_colors.rpc()
 			# See if we need to go to bidding or if we can go to the game
 #			$/root/Main.show_player_colors.rpc()
+			
+@rpc("authority", "call_local", "reliable")
+func start_player_bids():
+	print(player_info.name + ": starting bids")
+	ready_to_bid.emit()
 			
 @rpc("any_peer", "call_local", "reliable")
 func player_bid(id, bid):
@@ -127,7 +142,7 @@ func _register_player(new_player_info):
 	player_connected.emit(new_player_id, new_player_info)
 	print("_register_player() There are now " + str(players.size()) + " players")
 	if players.size() == 2:
-		ready_to_bid.emit()
+		ready_to_pick.emit()
 		
 
 
@@ -137,12 +152,17 @@ func _on_player_disconnected(id):
 
 
 func _on_connected_ok():
+	print("connection succeeded")
 	var peer_id = multiplayer.get_unique_id()
 	players[peer_id] = player_info
 	player_connected.emit(peer_id, player_info)
 
+func _on_connected_succeeded():
+	print("connection suceeded 2")
+
 
 func _on_connected_fail():
+	print("connection failed")
 	multiplayer.multiplayer_peer = null
 
 

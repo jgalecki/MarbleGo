@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://sa8uosstnnet"]
+[gd_scene load_steps=18 format=3 uid="uid://sa8uosstnnet"]
 
 [ext_resource type="Script" path="res://scripts/game_screen.gd" id="1_0kutb"]
 [ext_resource type="Script" path="res://scripts/camera.gd" id="2_8j2m7"]
@@ -12,7 +12,9 @@
 [ext_resource type="PackedScene" uid="uid://dq76kqw6pgnfa" path="res://prefab_scenes/audio_manager.tscn" id="9_jvejj"]
 [ext_resource type="Script" path="res://scripts/score_display.gd" id="10_8oc8v"]
 [ext_resource type="Script" path="res://scripts/game_over_screen.gd" id="11_4riqs"]
+[ext_resource type="Theme" uid="uid://cctkuf8rchhju" path="res://themes/game_theme.tres" id="12_2s52v"]
 [ext_resource type="Texture2D" uid="uid://nn3qwhrdusww" path="res://sprites/arrow.png" id="12_ekp2t"]
+[ext_resource type="Theme" uid="uid://c01v12h8pift" path="res://themes/basic_theme.tres" id="12_jpsh0"]
 [ext_resource type="Script" path="res://scripts/player_assignment_screen.gd" id="13_0ermv"]
 [ext_resource type="Script" path="res://scripts/negotiate_colors_screen.gd" id="15_ln5k3"]
 
@@ -114,10 +116,12 @@ layout_mode = 3
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
+offset_left = -420.0
 offset_top = 25.0
-offset_right = -25.0
-offset_bottom = -319.0
+offset_right = -30.0
+offset_bottom = 190.0
 grow_horizontal = 0
+theme = ExtResource("12_2s52v")
 script = ExtResource("10_8oc8v")
 current_turn = NodePath("PanelContainer/MarginContainer/VBoxContainer/GridContainer/Current Turn")
 score = NodePath("PanelContainer/MarginContainer/VBoxContainer/GridContainer/Score")
@@ -125,8 +129,8 @@ mouse_position = NodePath("PanelContainer/MarginContainer/VBoxContainer/GridCont
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Debug Score Display"]
 layout_mode = 0
-offset_right = 300.0
-offset_bottom = 86.0
+offset_right = 390.0
+offset_bottom = 165.0
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Debug Score Display/PanelContainer"]
 layout_mode = 2
@@ -145,31 +149,37 @@ columns = 2
 
 [node name="Current Turn Header" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
 text = "Current Turn:"
 
 [node name="Current Turn" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
 text = "Black"
 
 [node name="Score Header" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
 text = "Score:"
 
 [node name="Score" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Black: 000, White 000"
+theme_override_font_sizes/font_size = 22
+text = "Black: 8888, White 8888"
 
 [node name="Mouse Header" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Mouse:"
+theme_override_font_sizes/font_size = 22
+text = "Phase:"
 
 [node name="Mouse Position" type="Label" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 22
 text = "x: 5000, y: 1000"
 
 [node name="Pass Button" type="Button" parent="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Pass"
+text = "Resign"
 
 [node name="GameOverScreen" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("winner_label", "black_score_label", "white_score_label")]
 visible = false
@@ -185,6 +195,7 @@ offset_right = -438.0
 offset_bottom = -287.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("12_jpsh0")
 script = ExtResource("11_4riqs")
 winner_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/Winner Label")
 black_score_label = NodePath("PanelContainer/MarginContainer/VBoxContainer/Black Score Label")
@@ -250,6 +261,7 @@ offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(0.5, 0)
+theme = ExtResource("12_jpsh0")
 script = ExtResource("13_0ermv")
 
 [node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Player Assignment Screen"]
@@ -302,6 +314,7 @@ offset_right = 246.5
 offset_bottom = 86.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("12_jpsh0")
 script = ExtResource("15_ln5k3")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Negotiate Colors"]
@@ -485,7 +498,6 @@ text = "Bid"
 
 [connection signal="marble_added" from="GameBoard" to="GameBoard/AudioManager" method="_on_game_board_marble_added"]
 [connection signal="marble_added" from="GameBoard" to="Territory" method="_on_marble_added"]
-[connection signal="marble_captured" from="GameBoard" to="GameBoard/AudioManager" method="_on_game_board_marble_captured"]
 [connection signal="marble_shot" from="GameBoard" to="GameBoard/AudioManager" method="_on_game_board_marble_shot"]
 [connection signal="count_triangle" from="Territory" to="." method="_on_territory_count_triangle"]
 [connection signal="count_triangle" from="Territory" to="GameBoard" method="_on_territory_count_triangle"]
@@ -493,10 +505,14 @@ text = "Bid"
 [connection signal="finished_scoring" from="Territory" to="." method="_on_territory_finished_scoring"]
 [connection signal="show_triangle_lines" from="Territory" to="GameBoard" method="_on_territory_show_triangle_lines"]
 [connection signal="pressed" from="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/Pass Button" to="." method="_on_pass_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/Pass Button" to="GameBoard/AudioManager" method="playClick"]
 [connection signal="pressed" from="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer/Button" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/GameOverScreen/PanelContainer/MarginContainer/VBoxContainer/Button" to="GameBoard/AudioManager" method="playClick"]
+[connection signal="play_click" from="CanvasLayer/Player Assignment Screen" to="GameBoard/AudioManager" method="playClick"]
 [connection signal="pressed" from="CanvasLayer/Player Assignment Screen/PanelContainer/MarginContainer/VBoxContainer/Player Assignment Button" to="." method="_on_player_assignment_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Player Assignment Screen/PanelContainer/MarginContainer/VBoxContainer/Player Assignment Button" to="CanvasLayer/Player Assignment Screen" method="_on_player_assignment_button_pressed"]
 [connection signal="finished_choosing_colors" from="CanvasLayer/Negotiate Colors" to="." method="show_player_colors"]
+[connection signal="play_click" from="CanvasLayer/Negotiate Colors" to="GameBoard/AudioManager" method="playClick"]
 [connection signal="pressed" from="CanvasLayer/Negotiate Colors/MarginContainer/Color Selection/HBoxContainer/Play Black" to="CanvasLayer/Negotiate Colors" method="_on_select_black_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Negotiate Colors/MarginContainer/Color Selection/HBoxContainer/Play White" to="CanvasLayer/Negotiate Colors" method="_on_select_white_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Negotiate Colors/MarginContainer/Color Selection/Exit Button" to="CanvasLayer/Negotiate Colors" method="_on_exit_button_pressed"]

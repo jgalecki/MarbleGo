@@ -1,4 +1,0 @@
-Added single player mode.
-Color selection is more intuitive
-Rules screen added to the title.
-More progress networking, slightly borked right now.

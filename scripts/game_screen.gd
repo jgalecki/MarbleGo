@@ -2,6 +2,8 @@ extends Node
 
 @onready var player_assignment_screen = $"CanvasLayer/Player Assignment Screen"
 @onready var negotiate_colors = $"CanvasLayer/Negotiate Colors"
+@onready var pass_button:Button = $"CanvasLayer/Debug Score Display/PanelContainer/MarginContainer/VBoxContainer/Pass Button"
+
 
 var current_player:int = 0 	# 0 is black, 1 is white
 var current_turn:int = 0
@@ -74,7 +76,7 @@ func handle_input():
 			var shooting_strength = minf(1, aiming_delta.length() / 100.0)
 			shooting_arrow.scale.y = shooting_strength
 			if shooting_strength >= 0.98:
-				shooting_arrow.modulate = Color(0.776, 0.623, 0.647)
+				shooting_arrow.modulate = Color(0.95, 0.827, 0.67)
 				shooting_arrow.scale.x = 2
 			else:
 				shooting_arrow.modulate = Color(1, 1, 1)
@@ -86,7 +88,8 @@ func handle_input():
 				var shooting_strength = ai.shoot_marble_power()
 				if shooting_strength >= 0.98:
 					shooting_strength *= 2
-				var aiming_delta = Vector2(1, 0).rotated(ai.shoot_marble_angle())
+				var aiming_delta = ai.shoot_marble_angle()
+				print("AI aiming delta: " + str(aiming_delta))
 				game_board.shoot(aiming_delta.normalized(), 500 * shooting_strength)
 				
 				switch_to_rolling_phase.rpc()
@@ -106,7 +109,7 @@ func handle_input():
 			var shooting_strength = min(1, aiming_delta.length() / 100.0)
 			shooting_arrow.scale.y = shooting_strength
 			if shooting_strength >= 0.98:
-				shooting_arrow.modulate = Color(0.776, 0.623, 0.647)
+				shooting_arrow.modulate = Color(0.95, 0.827, 0.67)
 				shooting_arrow.scale.x = 2
 			else:
 				shooting_arrow.modulate = Color(1, 1, 1)
@@ -133,8 +136,11 @@ func handle_input():
 		else:
 			if lobby.players[1].single_player && lobby.players[1].color != current_player:
 				# AI placement
-				game_board.shooting_marble.position = ai.place_marble(game_board.black_marbles, game_board.white_marbles, game_board.border_marbles)
+				var pos = ai.place_marble(game_board.black_marbles, game_board.white_marbles, game_board.border_marbles)
+				game_board.shooting_marble.position = pos.normalized() * 256
+				print("AI shot position: " + str(pos.normalized() * 256))
 				switch_to_shooting_phase.rpc()
+				return
 			
 			var near_board = 350 * camera.zoom.x
 			if game_board.position.distance_to(mouse_world_position) > near_board:
@@ -150,6 +156,7 @@ func handle_input():
 			game_board.move_shot_around_perimeter(perimeter_position)
 
 			if Input.is_action_just_pressed("Confirm"):
+				print("plauer shot position: " + str(game_board.shooting_marble.position))
 				switch_to_shooting_phase.rpc()
 				shooting_arrow.position = game_board.shooting_marble.position
 				shooting_arrow.visible = true
@@ -216,7 +223,7 @@ func remote_control_shooting(mouse_pos:Vector2, released:bool):
 	var shooting_strength = minf(1, aiming_delta.length() / 100.0)
 	shooting_arrow.scale.y = shooting_strength
 	if shooting_strength >= 0.98:
-		shooting_arrow.modulate = Color(0.776, 0.623, 0.647)
+		shooting_arrow.modulate = Color(0.95, 0.827, 0.67)
 		shooting_arrow.scale.x = 2
 	else:
 		shooting_arrow.modulate = Color(1, 1, 1)
@@ -258,17 +265,17 @@ func reset_game():
 	var lobby:Lobby = get_node("/root/Lobby")
 	if lobby.players[1].color_bid > 0:
 		if lobby.players[1].color == 0:
-			white_bonus = lobby.players[1].color_bid
+			white_bonus = lobby.players[1].color_bid * 100
 			black_bonus = 0
 		else:
-			black_bonus = lobby.players[1].color_bid
+			black_bonus = lobby.players[1].color_bid  * 100
 			white_bonus = 0
 	elif lobby.players[lobby.guest_player_id].color_bid > 0:
 		if lobby.players[lobby.guest_player_id].color == 0:
-			white_bonus = lobby.players[lobby.guest_player_id].color_bid
+			white_bonus = lobby.players[lobby.guest_player_id].color_bid  * 100
 			black_bonus = 0
 		else:
-			black_bonus = lobby.players[lobby.guest_player_id].color_bid
+			black_bonus = lobby.players[lobby.guest_player_id].color_bid  * 100
 			white_bonus = 0
 	else:
 			white_bonus = 0
@@ -331,9 +338,16 @@ func switch_turns_local():
 		$"/root/Lobby".print("BLACK's turn " + str(current_turn))
 	else:
 		$"/root/Lobby".print("WHITE's turn " + str(current_turn))
+		
+	if player_scores[current_player] < player_scores[1 - current_player]:
+		pass_button.text = "Resign"
+	else:
+		pass_button.text = "Pass"
+		
 	update_ui()
 
 	next_turn()
+	
 	
 
 func switch_turns_online():
@@ -487,7 +501,7 @@ func capture_black_marbles():
 			dead_marbles.append(i)
 			var particles:GPUParticles2D = explode_particle_prefab.instantiate()
 			get_tree().current_scene.add_child(particles)
-			particles.modulate = Color(0.153, 0.153, 0.267)
+			particles.modulate = Color(0.06, 0.06, 0.12)
 			particles.position = black.position
 			hit_lag(0.5, 1)
 			camera.shake(1000, 1)

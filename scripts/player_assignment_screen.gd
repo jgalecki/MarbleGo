@@ -3,6 +3,7 @@ extends Control
 @onready var player_1_label = $"PanelContainer/MarginContainer/VBoxContainer/Player 1 Label"
 @onready var player_2_label = $"PanelContainer/MarginContainer/VBoxContainer/Player 2 Label"
 
+signal play_click
 
 # Called when the node enters the scene tree for the first time.
 func init():
@@ -12,8 +13,8 @@ func init():
 	if lobby.players[1].single_player:
 		lobby.players[1].color = lobby.players[1].color_choice
 		lobby.players[p2_id].color = 1 - lobby.players[1].color_choice
-		player_1_label.text = "Player 1: " + ("BLACK" if lobby.players[1].color == 0 else "WHITE")
-		player_2_label.text = "Player 2: " + ("BLACK" if lobby.players[p2_id].color == 0 else "WHITE")
+		player_1_label.text = lobby.players[1].name + ": " + ("BLACK" if lobby.players[1].color == 0 else "WHITE")
+		player_2_label.text = lobby.players[p2_id].name + ": " + ("BLACK" if lobby.players[p2_id].color == 0 else "WHITE")
 
 		lobby.players[1].color_bid = 0
 		lobby.players[p2_id].color_bid = 0
@@ -45,8 +46,8 @@ func init():
 		player_1_label.text = lobby.players[1].name + ": " + ("BLACK" if lobby.players[1].color == 0 else "WHITE")
 		player_2_label.text = lobby.players[p2_id].name + ": " + ("BLACK" if lobby.players[p2_id].color == 0 else "WHITE")
 	else:
-		player_1_label.text = "Player 1: " + ("BLACK" if lobby.players[1].color == 0 else "WHITE")
-		player_2_label.text = "Player 2: " + ("BLACK" if lobby.players[p2_id].color == 0 else "WHITE")
+		player_1_label.text = lobby.players[1].name + ": " + ("BLACK" if lobby.players[1].color == 0 else "WHITE")
+		player_2_label.text = lobby.players[p2_id].name + ": " + ("BLACK" if lobby.players[p2_id].color == 0 else "WHITE")
 
 	if lobby.players[1].online:
 		lobby.player_loaded.rpc()	
@@ -62,5 +63,6 @@ func _process(delta):
 
 
 func _on_player_assignment_button_pressed():
+	play_click.emit()
 	$"/root/Lobby".print("players acknowledged")
 	self.visible = false

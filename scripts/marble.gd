@@ -42,7 +42,7 @@ signal on_collision(marble : Marble, is_big : bool)
 
 func init(placing_player:int, placed_position:Vector2, index:int):
 	$"/root/Lobby".print("marble.init(), index " + str(index) + " at " + str(placed_position))			
-	sprite.modulate = Color(0.153, 0.153, 0.267) if placing_player == 0 else Color(0.984, 0.961, 0.937)
+	sprite.modulate = Color(0.06, 0.06, 0.12) if placing_player == 0 else Color(0.984, 0.961, 0.937)
 	player = placing_player
 	position = placed_position
 	placed_index = index
@@ -84,7 +84,7 @@ func update_after_turn():
 	else:
 		var nearest_opponent_count = nearest_marbles.filter(func(m): return m != null && m.player != player).size()
 		if player == 0:
-			unstable_particles.modulate = Color(0.153, 0.153, 0.267)
+			unstable_particles.modulate = Color(0.06, 0.06, 0.12)
 		else:
 			unstable_particles.modulate = Color(0.984, 0.961, 0.937)
 			
@@ -129,6 +129,7 @@ func _physics_process(delta):
 		
 	var normal = collision.get_normal()
 	sprite.rotation = normal.angle()
+	
 	if get_linear_velocity().length() < min_speed_for_minor_collision:
 		spawn_bounce_particles(position, normal, false)
 		on_collision.emit(self, false)
@@ -170,7 +171,7 @@ func spawn_stabalize_particles():
 	var particles:GPUParticles2D = stabalize_particles_prefab.instantiate()
 	get_tree().current_scene.add_child(particles)
 	if player == 0:
-		particles.modulate = Color(0.153, 0.153, 0.267)
+		particles.modulate = Color(0.06, 0.06, 0.12)
 	else:
 		particles.modulate = Color(0.984, 0.961, 0.937)
 	particles.position = position

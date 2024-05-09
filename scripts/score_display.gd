@@ -9,7 +9,7 @@ class_name ScoreDisplay
 func update_scores(scores:Array[float], turn:int, current_player:int):
 	current_turn.text = ("Black" if current_player == 0 else "White") + " " + str(turn)
 	score.text = "Black: " + str(round(scores[0]) / 100) + ", White: " + str(round(scores[1]) / 100)
-	$"/root/Lobby".print("Black: " + str(round(scores[0]) / 100) + ", White: " + str(round(scores[1]) / 100))
+#	$"/root/Lobby".print("Black: " + str(round(scores[0]) / 100) + ", White: " + str(round(scores[1]) / 100))
 	
 func update_mouse(phase:int, mouse:Vector2):
 	var phase_str = ""
@@ -23,4 +23,4 @@ func update_mouse(phase:int, mouse:Vector2):
 		3:
 			phase_str = "Calculating"
 	
-	mouse_position.text = phase_str +  ". X: " + str(roundi(mouse.x)) + ", Y: " + str(roundi(mouse.y))
+	mouse_position.text = phase_str

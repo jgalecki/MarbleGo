@@ -97,7 +97,7 @@ Week 4
 Week 5+
   Slightly better UI - panels, buttons
   Better shooting UI
-  Rules screen
+  xx Rules screen
   Credits screen
   
   More dynamic camera - zoom during collisions?
@@ -115,4 +115,24 @@ Week 5+
     xx Make stable / unstable distinction more clear
       xx anim for unstable?
       
-      
+Finish sprint
+  xx Shooting arrow from red to yellow
+  xx UI theme - basic!
+  xx Get networking nailed down.
+  xx title page
+    xx icons - discord, moonroof, git
+    xx Version number on title screen
+    xx Networking warnings / info
+      xx Separate port box
+      xx box for debugging network issues on title screen
+    xx Single player bot selection / info
+    
+  Audio
+    Matt's audio changes
+    Confirm sfx
+  
+  Itch
+    Link to discord, repo
+  git
+    MIT license on game source
+ 

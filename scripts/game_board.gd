@@ -18,6 +18,7 @@ signal marble_added(black_marbles, white_marbles)
 signal marble_shot(marble:Marble)
 signal marble_captured(marble:Marble)
 
+
 func _ready():
 	reset_board()
 	for border in border_marbles:
@@ -89,9 +90,11 @@ func set_latest_marble_as_shooting(player_id:int):
 func remove_unplaced_marble(player_id):
 	points_container.remove_child(shooting_marble)
 	if player_id == 0:
-		black_marbles.remove_at(black_marbles.size() - 1)
+		if black_marbles[black_marbles.size() - 1] == shooting_marble:
+			black_marbles.remove_at(black_marbles.size() - 1)
 	else:
-		white_marbles.remove_at(black_marbles.size() - 1)
+		if white_marbles[white_marbles.size() - 1] == shooting_marble:
+			white_marbles.remove_at(white_marbles.size() - 1)
 	shooting_marble.queue_free()
 	
 func move_shot_around_perimeter(pos):
@@ -130,7 +133,7 @@ func _on_territory_count_triangle(tri:Territory.Tri):
 	
 	var triP = Polygon2D.new()
 	triP.polygon = p
-	triP.color = Color(0.984, 0.961, 0.937, 0.25) if tri.owner == 1 else Color(0.153, 0.153, 0.267, 0.25)
+	triP.color = Color(0.984, 0.961, 0.937, 0.25) if tri.owner == 1 else Color(0.06, 0.06, 0.12, 0.25)
 	triangles_container.add_child(triP)
 	
 	# lines need the final point to be connected to the first manually
@@ -139,7 +142,7 @@ func _on_territory_count_triangle(tri:Territory.Tri):
 	line.points = p
 	line.width = 1
 	line.antialiased = true
-	line.default_color = Color(0.984, 0.961, 0.937) if tri.owner == 1 else Color(0.153, 0.153, 0.267)
+	line.default_color = Color(0.984, 0.961, 0.937) if tri.owner == 1 else Color(0.06, 0.06, 0.12)
 	lines_container.add_child(line)
 	
 
@@ -154,7 +157,7 @@ func _on_territory_show_triangle_lines(triangle, player):
 	line.points = p
 	line.width = 2
 	line.antialiased = true
-	line.default_color = Color(0.153, 0.153, 0.267, 0.4) if player == 0 else \
+	line.default_color = Color(0.06, 0.06, 0.12, 0.4) if player == 0 else \
 						 Color(0.984, 0.961, 0.937, 0.4) if player == 1 else \
 						 Color(0.95, 0.827, 0.67, 0.4)
 	lines_container.add_child(line)

@@ -12,13 +12,13 @@ func shoot_marble_power() -> float:
 	return 0
 	
 # Return a float representing the angle, in degrees, for the direction of the
-# marble shot. 
-# 0 -> [1, 0], right
-# 90 -> [0, -1], up
-# 180 -> [-1, 0], left
-# 270 -> [0, 1], down
-func shoot_marble_angle() -> float:	
-	return 0
+# marble shot. The return vector will be normalized.
+# [1, 0] -> right
+# [0, -1] -> up
+# [-1, 0] -> left
+# [0, 1] -> down
+func shoot_marble_angle() -> Vector2:	
+	return Vector2.ZERO
 
 func ai_handicap() -> int:
 	return 0
